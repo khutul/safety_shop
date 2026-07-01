@@ -91,3 +91,9 @@ Thumbs.db
 # scraped reference site (copyright + huge) — do NOT push
 apps/safety.mn/
 safety.mn/
+
+# Odoo local config — contains master password (use odoo.conf.example as template)
+odoo/config/odoo.conf
+
+# source material (company profile PDF, logo source files) — not needed in repo
+data/

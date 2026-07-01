@@ -5,3 +5,5 @@ from . import safety_catalog_product_image
 from . import safety_catalog_product_document
 from . import safety_catalog_product_feature
 from . import product_template
+from . import safety_site_hero
+from . import safety_site_settings

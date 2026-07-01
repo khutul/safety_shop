@@ -1,6 +1,6 @@
 import { Metadata } from "next"
 import Hero from "@modules/home/components/hero"
-import SafetyProducts from "@modules/home/components/axetor-products"
+import CategoryRails from "@modules/home/components/category-rails"
 import BrandLogos from "@modules/home/components/brand-logos"
 import IndustrySection from "@modules/home/components/industry-section"
 
@@ -12,12 +12,12 @@ export const metadata: Metadata = {
 export default async function Home(props: {
   params: Promise<{ countryCode: string }>
 }) {
-  const { countryCode } = await props.params
+  await props.params
   return (
     <div style={{ background: "#151515" }}>
       <Hero />
       <IndustrySection />
-      <SafetyProducts countryCode={countryCode} />
+      <CategoryRails />
       <BrandLogos />
     </div>
   )

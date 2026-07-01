@@ -1,131 +1,52 @@
 import { Metadata } from "next"
 import { notFound } from "next/navigation"
-import { listProducts } from "@lib/data/products"
-import { getRegion, listRegions } from "@lib/data/regions"
-import ProductTemplate from "@modules/products/templates"
-import { HttpTypes } from "@medusajs/types"
+import ManadaProductDetail from "@modules/products/templates/manada-detail"
+
+const API = process.env.NEXT_PUBLIC_ODOO_API_URL || "http://localhost:8079/api/v1"
+const BASE = process.env.NEXT_PUBLIC_ODOO_BASE_URL || "http://localhost:8079"
 
 type Props = {
   params: Promise<{ countryCode: string; handle: string }>
-  searchParams: Promise<{ v_id?: string }>
 }
 
-export async function generateStaticParams() {
+async function getProduct(slug: string) {
   try {
-    const countryCodes = await listRegions().then((regions) =>
-      regions?.map((r) => r.countries?.map((c) => c.iso_2)).flat()
-    )
-
-    if (!countryCodes) {
-      return []
-    }
-
-    const promises = countryCodes.map(async (country) => {
-      const { response } = await listProducts({
-        countryCode: country,
-        queryParams: { limit: 100, fields: "handle" },
-      })
-
-      return {
-        country,
-        products: response.products,
-      }
-    })
-
-    const countryProducts = await Promise.all(promises)
-
-    return countryProducts
-      .flatMap((countryData) =>
-        countryData.products.map((product) => ({
-          countryCode: countryData.country,
-          handle: product.handle,
-        }))
-      )
-      .filter((param) => param.handle)
-  } catch (error) {
-    console.error(
-      `Failed to generate static paths for product pages: ${
-        error instanceof Error ? error.message : "Unknown error"
-      }.`
-    )
-    return []
+    const res = await fetch(`${API}/products/${encodeURIComponent(slug)}?lang=mn`, { cache: "no-store" })
+    if (!res.ok) return null
+    return await res.json()
+  } catch {
+    return null
   }
 }
 
-function getImagesForVariant(
-  product: HttpTypes.StoreProduct,
-  selectedVariantId?: string
-) {
-  if (!selectedVariantId || !product.variants) {
-    return product.images
+async function getPhone(): Promise<string> {
+  try {
+    const res = await fetch(`${API}/site/settings?lang=mn`, { cache: "no-store" })
+    if (!res.ok) return "+97699102250"
+    const s = await res.json()
+    return (s.phone || "+97699102250").replace(/\s/g, "")
+  } catch {
+    return "+97699102250"
   }
-
-  const variant = product.variants!.find((v) => v.id === selectedVariantId)
-  if (!variant || !variant.images?.length) {
-    return product.images
-  }
-
-  const imageIdsMap = new Map(variant.images!.map((i) => [i.id, true]))
-  return product.images?.filter((i) => imageIdsMap.has(i.id)) ?? null
 }
 
 export async function generateMetadata(props: Props): Promise<Metadata> {
-  const params = await props.params
-  const { handle } = params
-  const region = await getRegion(params.countryCode)
-
-  if (!region) {
-    notFound()
-  }
-
-  const product = await listProducts({
-    countryCode: params.countryCode,
-    queryParams: { handle },
-  }).then(({ response }) => response.products[0])
-
-  if (!product) {
-    notFound()
-  }
-
+  const { handle } = await props.params
+  const p = await getProduct(handle)
+  if (!p) return { title: "Бүтээгдэхүүн | Manada Safety" }
   return {
-    title: `${product.title} | Medusa Store`,
-    description: `${product.title}`,
+    title: `${p.meta_title || p.name} | Manada Safety`,
+    description: p.meta_description || p.short_description || p.name,
     openGraph: {
-      title: `${product.title} | Medusa Store`,
-      description: `${product.title}`,
-      images: product.thumbnail ? [product.thumbnail] : [],
+      title: p.name,
+      images: p.main_image_url ? [BASE + p.main_image_url] : [],
     },
   }
 }
 
 export default async function ProductPage(props: Props) {
-  const params = await props.params
-  const region = await getRegion(params.countryCode)
-  const searchParams = await props.searchParams
-
-  const selectedVariantId = searchParams.v_id
-
-  if (!region) {
-    notFound()
-  }
-
-  const pricedProduct = await listProducts({
-    countryCode: params.countryCode,
-    queryParams: { handle: params.handle },
-  }).then(({ response }) => response.products[0])
-
-  const images = getImagesForVariant(pricedProduct, selectedVariantId)
-
-  if (!pricedProduct) {
-    notFound()
-  }
-
-  return (
-    <ProductTemplate
-      product={pricedProduct}
-      region={region}
-      countryCode={params.countryCode}
-      images={images ?? []}
-    />
-  )
+  const { handle } = await props.params
+  const [p, phone] = await Promise.all([getProduct(handle), getPhone()])
+  if (!p) notFound()
+  return <ManadaProductDetail product={p} base={BASE} phone={phone} />
 }

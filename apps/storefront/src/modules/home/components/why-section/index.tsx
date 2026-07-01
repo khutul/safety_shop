@@ -47,7 +47,7 @@ export default function WhySection() {
         <div className="content-container">
           <h2
             style={{
-              fontFamily: "'Barlow Condensed', Impact, sans-serif",
+              fontFamily: "'Oswald', Impact, sans-serif",
               fontSize: "32px",
               fontWeight: 900,
               textTransform: "uppercase",
@@ -81,7 +81,7 @@ export default function WhySection() {
               >
                 <div
                   style={{
-                    fontFamily: "'Barlow Condensed', Impact, sans-serif",
+                    fontFamily: "'Oswald', Impact, sans-serif",
                     fontSize: "36px",
                     fontWeight: 900,
                     color: "#f5c518",
@@ -127,7 +127,7 @@ export default function WhySection() {
             <div>
               <div
                 style={{
-                  fontFamily: "'Barlow Condensed', Impact, sans-serif",
+                  fontFamily: "'Oswald', Impact, sans-serif",
                   fontSize: "22px",
                   fontWeight: 900,
                   color: "#fff",

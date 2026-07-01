@@ -13,11 +13,11 @@ export default function BrandLogos() {
       <div style={{ maxWidth: 1340, margin: "0 auto", padding: "0 16px" }}>
         <div style={{ display: "flex", alignItems: "center", overflowX: "auto" }}>
           <span style={{ color: "rgba(255,255,255,0.22)", fontSize: 9, fontWeight: 700, letterSpacing: "0.18em", textTransform: "uppercase", whiteSpace: "nowrap", flexShrink: 0, paddingRight: 16, borderRight: "1px solid #2A2A2A" }}>
-            GEREE BRAND
+            АЛБАН ЁСНЫ ДИЛЕР
           </span>
           {BRANDS.map((b, i) => (
             <div key={b.name} style={{ padding: "4px 18px", borderRight: i < BRANDS.length - 1 ? "1px solid #2A2A2A" : "none", flexShrink: 0 }}>
-              <span style={{ fontSize: 14, fontWeight: 900, color: b.color, fontFamily: "Impact, Arial, sans-serif", letterSpacing: "0.04em", whiteSpace: "nowrap" }}>
+              <span style={{ fontSize: 13, fontWeight: 600, color: b.color, fontFamily: "var(--ms-font-body)", letterSpacing: "0.02em", whiteSpace: "nowrap" }}>
                 {b.name}
               </span>
             </div>

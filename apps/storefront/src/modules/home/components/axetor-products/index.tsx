@@ -52,14 +52,7 @@ function ProductCard({ product }: { product: HttpTypes.StoreProduct }) {
 
   return (
     <LocalizedClientLink href={`/products/${product.handle}`} style={{ textDecoration: "none", display: "block" }}>
-      <div style={{
-        background: "#fff",
-        borderRadius: 4,
-        boxShadow: "0px 0px 5px rgba(0,0,0,0.08)",
-        cursor: "pointer",
-        overflow: "hidden",
-        transition: "box-shadow 0.2s",
-      }}>
+      <div className="ms-card" style={{ cursor: "pointer" }}>
         <div style={{ height: 36, lineHeight: "36px", padding: "0 12px", borderBottom: "1px solid #f5f5f5" }}>
           {brand ? (
             <span style={{ fontSize: 11, color: "#828282", fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.05em" }}>
@@ -137,7 +130,7 @@ function ProductCard({ product }: { product: HttpTypes.StoreProduct }) {
               marginBottom: 6,
               overflow: "hidden", whiteSpace: "nowrap", textOverflow: "ellipsis",
             }}>
-              {productCode && `Code: ${productCode}`}
+              {productCode && `Код: ${productCode}`}
               {productCode && pn && " ∙ "}
               {pn && `PN: ${pn}`}
             </span>
@@ -158,8 +151,8 @@ function ProductCard({ product }: { product: HttpTypes.StoreProduct }) {
                 {inStock ? <CheckSVG /> : "⏳"}
               </span>
               {inStock
-                ? (totalInventory > 0 && totalInventory < 1000 ? `In stock: ${totalInventory}` : "In stock")
-                : "On order"}
+                ? (totalInventory > 0 && totalInventory < 1000 ? `Нөөцтэй: ${totalInventory}` : "Нөөцтэй")
+                : "Захиалгаар"}
             </div>
           </div>
 
@@ -167,7 +160,7 @@ function ProductCard({ product }: { product: HttpTypes.StoreProduct }) {
             <div style={{ flex: 1, overflow: "hidden" }}>
               {calculated > 0 ? (
                 <span>
-                  <span style={{ fontSize: 15, fontWeight: 700, color: "#D4A017" }}>
+                  <span style={{ fontSize: 15, fontWeight: 800, color: "#1a1a1a" }}>
                     {formatPrice(calculated, currency)}
                   </span>
                   {savePct && original > 0 && (
@@ -177,7 +170,7 @@ function ProductCard({ product }: { product: HttpTypes.StoreProduct }) {
                   )}
                 </span>
               ) : (
-                <span style={{ fontSize: 12, color: "#828282" }}>Price on request</span>
+                <span style={{ fontSize: 12, color: "#828282" }}>Үнэ асуух</span>
               )}
             </div>
             <button style={{
@@ -208,18 +201,18 @@ function EmptyProducts() {
       border: "1px dashed #d1d5db",
     }}>
       <div style={{ fontSize: 16, fontWeight: 700, color: "#374151", marginBottom: 6, textTransform: "uppercase" }}>
-        No products available
+        Бүтээгдэхүүн байхгүй байна
       </div>
       <div style={{ fontSize: 13, color: "#9ca3af", marginBottom: 16 }}>
-        Add products and set status to Published in the admin panel
+        Odoo дээр бүтээгдэхүүн нэмээд "Вэбд нийтлэх" төлөвт оруулна уу
       </div>
-      <a href="http://localhost:9000/app/products" style={{
-        background: "#D4A017", color: "#151515",
+      <a href="http://localhost:8079/web" style={{
+        background: "#FFCC00", color: "#151515",
         fontSize: 12, fontWeight: 700,
         padding: "8px 20px", borderRadius: 2,
         textDecoration: "none", display: "inline-block",
       }}>
-        Admin panel
+        Удирдлагын хэсэг
       </a>
     </div>
   )
@@ -242,20 +235,12 @@ export default async function SafetyProducts({ countryCode }: { countryCode: str
 
   return (
     <div style={{ background: "#1A1A1A", padding: "28px 0 44px" }}>
-      <div style={{ maxWidth: 1340, margin: "0 auto", padding: "0 16px" }}>
-        <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 20 }}>
-          <div style={{ width: 4, height: 22, background: "#D4A017", borderRadius: 1 }} />
-          <a href="/store" style={{
-            fontSize: 13, fontWeight: 800, color: "#fff",
-            textDecoration: "none", letterSpacing: "0.14em",
-            textTransform: "uppercase", flex: 1,
-          }}>
-            NEW ARRIVALS
-          </a>
-          <div style={{ flex: 1, height: 1, background: "#2A2A2A" }} />
-          <a href="/store" style={{ fontSize: 11, color: "#D4A017", textDecoration: "none", fontWeight: 700, letterSpacing: "0.08em" }}>
-            VIEW ALL
-          </a>
+      <div className="ms-container">
+        <div className="ms-sechead">
+          <div className="bar" />
+          <span className="title">Шинэ бүтээгдэхүүн</span>
+          <div className="rule" />
+          <a href="/store" className="more">Бүгд →</a>
         </div>
 
         {products.length === 0 ? (

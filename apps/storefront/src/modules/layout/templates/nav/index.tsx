@@ -14,6 +14,15 @@ function CartIconSVG() {
   )
 }
 
+const MENU: { label: string; href: string }[] = [
+  { label: "Нүүр хуудас", href: "/" },
+  { label: "Бүтээгдэхүүн", href: "/store" },
+  { label: "Брэндүүд", href: "/store" },
+  { label: "Салбарууд", href: "/store" },
+  { label: "Бидний тухай", href: "/about" },
+  { label: "Холбоо барих", href: "/about" },
+]
+
 export default async function Nav() {
   return (
     <div className="sticky top-0 inset-x-0 z-50">
@@ -21,22 +30,23 @@ export default async function Nav() {
         <div style={{ maxWidth: 1340, margin: "0 auto", padding: "0 16px", display: "flex", alignItems: "center", height: 64, gap: 14 }}>
           <SidebarWrapper />
           <LocalizedClientLink href="/" style={{ textDecoration: "none", flexShrink: 0 }}>
-            <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-              <WolfLogo size={38} />
-              <div style={{ lineHeight: 1.15 }}>
-                <div style={{ fontSize: 18, fontWeight: 900, color: "#D4A017", letterSpacing: "0.06em", textTransform: "uppercase", fontFamily: "Georgia, serif" }}>MANADA</div>
-                <div style={{ fontSize: 9, color: "rgba(255,255,255,0.55)", letterSpacing: "0.22em", textTransform: "uppercase" }}>SAFETY MN</div>
+            <div style={{ display: "flex", alignItems: "center", gap: 11 }}>
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src="/manada-logo-light.png" alt="Manada Safety" style={{ height: 42, width: "auto", display: "block" }} />
+              <div style={{ lineHeight: 1.12 }}>
+                <div style={{ fontSize: 19, fontWeight: 900, color: "#FFCC00", letterSpacing: "0.05em", textTransform: "uppercase", fontFamily: "var(--ms-font-display)" }}>MANADA</div>
+                <div style={{ fontSize: 9, color: "rgba(255,255,255,0.55)", letterSpacing: "0.24em", textTransform: "uppercase" }}>SAFETY MN</div>
               </div>
             </div>
           </LocalizedClientLink>
           <div style={{ width: 1, height: 30, background: "#2A2A2A", flexShrink: 0 }} />
           <div style={{ flex: 1, maxWidth: 440, background: "#252525", border: "1px solid #333", borderRadius: 3, display: "flex", alignItems: "center", overflow: "hidden" }}>
-            <button style={{ background: "none", border: "none", cursor: "pointer", padding: "8px 10px 8px 14px", color: "#D4A017", flexShrink: 0 }}>
+            <button style={{ background: "none", border: "none", cursor: "pointer", padding: "8px 10px 8px 14px", color: "#FFCC00", flexShrink: 0 }}>
               <svg width="17" height="17" fill="currentColor" viewBox="0 0 24 24">
                 <path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z" />
               </svg>
             </button>
-            <input type="text" placeholder="Search products..." style={{ background: "none", border: "none", outline: "none", flex: 1, padding: "9px 12px 9px 0", fontSize: 13, color: "#e0e0e0" }} />
+            <input type="text" placeholder="Бүтээгдэхүүн хайх..." style={{ background: "none", border: "none", outline: "none", flex: 1, padding: "9px 12px 9px 0", fontSize: 13, color: "#e0e0e0" }} />
           </div>
           <div style={{ display: "flex", gap: 8, alignItems: "center", marginLeft: "auto" }}>
             <LocalizedClientLink href="/account" style={{ color: "rgba(255,255,255,0.6)", textDecoration: "none", display: "flex", alignItems: "center", padding: "6px 8px" }}>
@@ -51,11 +61,20 @@ export default async function Nav() {
             }>
               <CartButton />
             </Suspense>
-            <a href="tel:+97699102250" style={{ border: "1px solid #D4A017", color: "#D4A017", fontSize: 12, fontWeight: 700, padding: "7px 16px", borderRadius: 2, textDecoration: "none", whiteSpace: "nowrap" }}>
+            <a href="tel:+97699102250" style={{ border: "1px solid #FFCC00", color: "#FFCC00", fontSize: 12, fontWeight: 700, padding: "7px 16px", borderRadius: 2, textDecoration: "none", whiteSpace: "nowrap" }}>
               99102250
             </a>
           </div>
         </div>
+        <nav style={{ background: "#181818", borderTop: "1px solid #232323" }}>
+          <div style={{ maxWidth: 1340, margin: "0 auto", padding: "0 12px", display: "flex", alignItems: "center", height: 46 }}>
+            {MENU.map((m) => (
+              <LocalizedClientLink key={m.label} href={m.href} className="ms-navlink">
+                {m.label}
+              </LocalizedClientLink>
+            ))}
+          </div>
+        </nav>
       </header>
     </div>
   )

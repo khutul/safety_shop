@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- ============ HERO SLIDES ============ -->
+    <record id="view_safety_site_hero_list" model="ir.ui.view">
+        <field name="name">safety.site.hero.list</field>
+        <field name="model">safety.site.hero</field>
+        <field name="arch" type="xml">
+            <list string="Hero Slides">
+                <field name="sequence" widget="handle"/>
+                <field name="name"/>
+                <field name="badge"/>
+                <field name="line1"/>
+                <field name="active"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_safety_site_hero_form" model="ir.ui.view">
+        <field name="name">safety.site.hero.form</field>
+        <field name="model">safety.site.hero</field>
+        <field name="arch" type="xml">
+            <form string="Hero Slide">
+                <sheet>
+                    <div class="oe_title">
+                        <label for="name"/>
+                        <h1><field name="name" placeholder="ж: Слайд 1"/></h1>
+                    </div>
+                    <group>
+                        <group string="Агуулга">
+                            <field name="badge" placeholder="ж: УУЛ УУРХАЙН СТАНДАРТ"/>
+                            <field name="line1" placeholder="Гарчгийн 1-р мөр"/>
+                            <field name="line2" placeholder="Гарчгийн 2-р мөр"/>
+                            <field name="line3" placeholder="Гарчгийн 3-р мөр"/>
+                        </group>
+                        <group string="Товч ба тохиргоо">
+                            <field name="cta_label" placeholder="ж: Бүтээгдэхүүн үзэх"/>
+                            <field name="cta_url" placeholder="/store"/>
+                            <field name="sequence"/>
+                            <field name="active"/>
+                        </group>
+                    </group>
+                    <group string="Дэвсгэр зураг (1600x900 зэрэг өргөн зураг тохиромжтой)">
+                        <field name="image" widget="image" nolabel="1"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_safety_site_hero" model="ir.actions.act_window">
+        <field name="name">Hero баннер</field>
+        <field name="res_model">safety.site.hero</field>
+        <field name="view_mode">list,form</field>
+        <field name="context">{'active_test': False}</field>
+    </record>
+
+    <!-- ============ SITE SETTINGS ============ -->
+    <record id="view_safety_site_settings_form" model="ir.ui.view">
+        <field name="name">safety.site.settings.form</field>
+        <field name="model">safety.site.settings</field>
+        <field name="arch" type="xml">
+            <form string="Вэбсайт тохиргоо">
+                <sheet>
+                    <group>
+                        <group string="Холбоо барих">
+                            <field name="phone"/>
+                            <field name="phone2"/>
+                            <field name="email"/>
+                            <field name="address"/>
+                            <field name="working_hours"/>
+                        </group>
+                        <group string="Сошиал">
+                            <field name="facebook_url" widget="url"/>
+                            <field name="instagram_url" widget="url"/>
+                        </group>
+                    </group>
+                    <group string="Hero ерөнхий">
+                        <field name="hero_subtitle"/>
+                        <field name="cta_primary_label"/>
+                        <field name="cta_primary_url"/>
+                    </group>
+                    <group>
+                        <group string="Статистик 1-2">
+                            <label for="stat1_value" string="1-р үзүүлэлт"/>
+                            <div class="o_row">
+                                <field name="stat1_value" placeholder="5,000+"/>
+                                <field name="stat1_label" placeholder="Бүтээгдэхүүний төрөл"/>
+                            </div>
+                            <label for="stat2_value" string="2-р үзүүлэлт"/>
+                            <div class="o_row">
+                                <field name="stat2_value" placeholder="300+"/>
+                                <field name="stat2_label" placeholder="Хамтрагч байгууллага"/>
+                            </div>
+                        </group>
+                        <group string="Статистик 3-4">
+                            <label for="stat3_value" string="3-р үзүүлэлт"/>
+                            <div class="o_row">
+                                <field name="stat3_value" placeholder="2023"/>
+                                <field name="stat3_label" placeholder="Үүсгэн байгуулагдсан"/>
+                            </div>
+                            <label for="stat4_value" string="4-р үзүүлэлт"/>
+                            <div class="o_row">
+                                <field name="stat4_value" placeholder="50+"/>
+                                <field name="stat4_label" placeholder="Дэлхийн брэнд"/>
+                            </div>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_safety_site_settings" model="ir.actions.act_window">
+        <field name="name">Вэбсайт тохиргоо</field>
+        <field name="res_model">safety.site.settings</field>
+        <field name="view_mode">form</field>
+        <field name="res_id" eval="ref('safety_catalog.site_settings_main')"/>
+        <field name="target">current</field>
+    </record>
+
+    <!-- ============ MENUS ============ -->
+    <menuitem id="menu_safety_site_hero" name="Hero баннер"
+              parent="menu_safety_catalog_root" action="action_safety_site_hero" sequence="30"/>
+    <menuitem id="menu_safety_site_settings" name="Вэбсайт тохиргоо"
+              parent="menu_safety_catalog_root" action="action_safety_site_settings" sequence="40"/>
+
+</odoo>

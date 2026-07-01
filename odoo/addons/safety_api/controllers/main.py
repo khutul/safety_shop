@@ -141,6 +141,55 @@ class SafetyCatalogAPI(http.Controller):
         ]
         return request.make_response(data, headers=headers)
 
+    # ---------------- Site content (CMS) ----------------
+    @http.route("/api/v1/site/hero", type="http", auth="public",
+                methods=["GET"], csrf=False, cors="*")
+    def site_hero(self, **kw):
+        slides = request.env["safety.site.hero"].sudo().with_context(**_lang_ctx(kw)).search(
+            [("active", "=", True)], order="sequence, id")
+        data = [{
+            "id": s.id,
+            "badge": s.badge or "",
+            "line1": s.line1 or "",
+            "line2": s.line2 or "",
+            "line3": s.line3 or "",
+            "cta_label": s.cta_label or "",
+            "cta_url": s.cta_url or "/store",
+            "image_url": ("/api/v1/site/hero/%s/image" % s.id) if s.image else None,
+        } for s in slides]
+        return request.make_json_response(data)
+
+    @http.route("/api/v1/site/hero/<int:hero_id>/image", type="http",
+                auth="public", csrf=False, cors="*")
+    def site_hero_image(self, hero_id, **kw):
+        rec = request.env["safety.site.hero"].sudo().browse(hero_id)
+        return self._image_response(rec, "image")
+
+    @http.route("/api/v1/site/settings", type="http", auth="public",
+                methods=["GET"], csrf=False, cors="*")
+    def site_settings(self, **kw):
+        s = request.env["safety.site.settings"].sudo().with_context(**_lang_ctx(kw)).search([], limit=1)
+        if not s:
+            return request.make_json_response({})
+        return request.make_json_response({
+            "phone": s.phone or "",
+            "phone2": s.phone2 or "",
+            "address": s.address or "",
+            "email": s.email or "",
+            "facebook_url": s.facebook_url or "",
+            "instagram_url": s.instagram_url or "",
+            "working_hours": s.working_hours or "",
+            "hero_subtitle": s.hero_subtitle or "",
+            "cta_primary_label": s.cta_primary_label or "",
+            "cta_primary_url": s.cta_primary_url or "/store",
+            "stats": [
+                {"value": s.stat1_value or "", "label": s.stat1_label or ""},
+                {"value": s.stat2_value or "", "label": s.stat2_label or ""},
+                {"value": s.stat3_value or "", "label": s.stat3_label or ""},
+                {"value": s.stat4_value or "", "label": s.stat4_label or ""},
+            ],
+        })
+
     # ---------------- helpers ----------------
     def _image_response(self, rec, field):
         if not rec.exists() or not rec[field]:

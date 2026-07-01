@@ -2,9 +2,183 @@
 @import "tailwindcss/components";
 @import "tailwindcss/utilities";
 
+/* ============================================================
+   MANADA SAFETY — Brand design system (dark industrial)
+   ============================================================ */
+:root {
+  /* Surfaces */
+  --ms-bg: #121212;
+  --ms-surface: #1a1a1a;
+  --ms-surface-2: #1f1f1f;
+  --ms-elevated: #242424;
+  --ms-border: #2a2a2a;
+  --ms-border-soft: #222222;
+
+  /* Brand orange (Manada Safety) */
+  --ms-gold: #FFCC00;
+  --ms-gold-light: #FFE066;
+  --ms-gold-dark: #E0A800;
+  --ms-gold-grad: linear-gradient(90deg, #FFCC00 0%, #FFE066 50%, #FFCC00 100%);
+
+  /* Text */
+  --ms-text: #ffffff;
+  --ms-text-muted: rgba(255, 255, 255, 0.62);
+  --ms-text-faint: rgba(255, 255, 255, 0.38);
+  --ms-ink: #151515;
+
+  /* Accents */
+  --ms-sale: #d62828;
+  --ms-success: #44782a;
+  --ms-success-bg: #e2f2da;
+
+  /* Shape */
+  --ms-radius: 4px;
+  --ms-shadow: 0 4px 24px rgba(0, 0, 0, 0.35);
+  --ms-shadow-lift: 0 10px 34px rgba(0, 0, 0, 0.5);
+
+  /* Fonts */
+  --ms-font-body: "Inter", system-ui, -apple-system, Segoe UI, Arial, sans-serif;
+  --ms-font-display: "Oswald", Impact, "Arial Narrow", sans-serif;
+}
+
 /* MANADA SAFETY — Dark industrial theme */
 html, body {
-  background-color: #151515;
+  background-color: var(--ms-bg);
+  font-family: var(--ms-font-body);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+/* Reusable brand components (usable from inline-styled React too) */
+.ms-container {
+  max-width: 1340px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+/* Section eyebrow header: gold bar + title + rule + link */
+.ms-sechead {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+.ms-sechead .bar {
+  width: 4px;
+  height: 22px;
+  background: var(--ms-gold);
+  border-radius: 2px;
+  flex-shrink: 0;
+}
+.ms-sechead .title {
+  font-family: var(--ms-font-display);
+  font-size: 22px;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #151515;
+  white-space: nowrap;
+}
+.ms-sechead .rule {
+  flex: 1;
+  height: 1px;
+  background: #e5e7eb;
+}
+.ms-sechead .more {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #8a6d00;
+  text-decoration: none;
+  white-space: nowrap;
+  transition: color 0.18s;
+}
+.ms-sechead .more:hover { color: #151515; }
+
+/* Section head on dark backgrounds */
+.ms-sechead.on-dark .title { color: #ffffff; }
+.ms-sechead.on-dark .rule { background: var(--ms-border); }
+.ms-sechead.on-dark .more { color: var(--ms-gold); }
+.ms-sechead.on-dark .more:hover { color: var(--ms-gold-light); }
+
+/* Buttons */
+.ms-btn-gold {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--ms-gold);
+  color: var(--ms-ink);
+  font-family: var(--ms-font-display);
+  font-weight: 800;
+  font-size: 14px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  padding: 13px 30px;
+  border-radius: var(--ms-radius);
+  text-decoration: none;
+  border: none;
+  cursor: pointer;
+  transition: transform 0.16s ease, box-shadow 0.16s ease, background 0.16s;
+}
+.ms-btn-gold:hover {
+  background: var(--ms-gold-light);
+  transform: translateY(-1px);
+  box-shadow: 0 8px 22px rgba(255, 204, 0, 0.32);
+}
+.ms-btn-ghost {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: transparent;
+  color: var(--ms-text);
+  font-family: var(--ms-font-display);
+  font-weight: 700;
+  font-size: 14px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  padding: 12px 26px;
+  border-radius: var(--ms-radius);
+  border: 1.5px solid rgba(255, 255, 255, 0.28);
+  text-decoration: none;
+  cursor: pointer;
+  transition: border-color 0.16s, color 0.16s, background 0.16s;
+}
+.ms-btn-ghost:hover {
+  border-color: var(--ms-gold);
+  color: var(--ms-gold);
+}
+
+/* Header horizontal menu links */
+.ms-navlink {
+  color: rgba(255, 255, 255, 0.72);
+  text-decoration: none;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  padding: 13px 16px;
+  border-bottom: 2px solid transparent;
+  transition: color 0.15s, border-color 0.15s;
+  white-space: nowrap;
+}
+.ms-navlink:hover {
+  color: var(--ms-gold);
+  border-color: var(--ms-gold);
+}
+
+/* Product card lift */
+.ms-card {
+  background: #fff;
+  border-radius: var(--ms-radius);
+  border: 1px solid #ededed;
+  overflow: hidden;
+  transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s;
+}
+.ms-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.14);
+  border-color: #e0e0e0;
 }
 
 @layer utilities {

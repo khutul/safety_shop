@@ -6,3 +6,7 @@ access_safety_catalog_brand_manager,safety.catalog.brand.manager,model_safety_ca
 access_safety_catalog_product_image_user,safety.catalog.product.image.user,model_safety_catalog_product_image,base.group_user,1,1,1,1
 access_safety_catalog_product_document_user,safety.catalog.product.document.user,model_safety_catalog_product_document,base.group_user,1,1,1,1
 access_safety_catalog_product_feature_user,safety.catalog.product.feature.user,model_safety_catalog_product_feature,base.group_user,1,1,1,1
+access_safety_site_hero_user,safety.site.hero.user,model_safety_site_hero,base.group_user,1,0,0,0
+access_safety_site_hero_manager,safety.site.hero.manager,model_safety_site_hero,base.group_system,1,1,1,1
+access_safety_site_settings_user,safety.site.settings.user,model_safety_site_settings,base.group_user,1,0,0,0
+access_safety_site_settings_manager,safety.site.settings.manager,model_safety_site_settings,base.group_system,1,1,1,1

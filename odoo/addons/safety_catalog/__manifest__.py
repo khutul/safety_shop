@@ -24,6 +24,8 @@ on this module.
         "views/safety_catalog_brand_views.xml",
         "views/product_template_views.xml",
         "data/safety_catalog_category_data.xml",
+        "data/safety_site_data.xml",
+        "views/safety_site_views.xml",
     ],
     "installable": True,
     "application": False,

@@ -23,7 +23,7 @@ export default async function GalleryPage() {
         {/* Header */}
         <div style={{ marginBottom: "28px" }}>
           <h1 style={{
-            fontFamily: "'Barlow Condensed', Impact, sans-serif",
+            fontFamily: "'Oswald', Impact, sans-serif",
             fontSize: "32px",
             fontWeight: 900,
             textTransform: "uppercase",

@@ -9,10 +9,10 @@ interface WolfLogoProps {
  * Matches the official company mark: tribal mane, pointed ears, partial circle arc.
  */
 export default function WolfLogo({ size = 44, variant = "gold" }: WolfLogoProps) {
-  const main = variant === "gold" ? "#D4A017" : "#1A1A1A"
+  const main = variant === "gold" ? "#FFCC00" : "#1A1A1A"
   const shade = variant === "gold" ? "#9A7010" : "#3A3A3A"
   const light = variant === "gold" ? "#F0C840" : "#555555"
-  const arc = variant === "gold" ? "#D4A017" : "#1A1A1A"
+  const arc = variant === "gold" ? "#FFCC00" : "#1A1A1A"
 
   return (
     <svg
