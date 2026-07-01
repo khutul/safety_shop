@@ -1,0 +1,188 @@
+erDiagram
+    %% =========================================================
+    %%  safety_shop — PPE Platform Master Data Model (ERD) v1
+    %%  Legend: (STD) = standard Odoo · (CUSTOM) = new extension
+    %% =========================================================
+
+    %% ---------- PRODUCT DOMAIN ----------
+    PRODUCT_TEMPLATE {
+        char name
+        char default_code "SKU"
+        char barcode
+        selection type "Goods/Service"
+        boolean is_storable "track inventory"
+        float list_price "base price"
+        float standard_price "cost"
+        m2o categ_id "internal STD"
+        m2o uom_id "STD"
+        m2o brand_id "CUSTOM"
+        m2m storefront_categ_ids "CUSTOM"
+        m2m product_tag_ids "STD tags"
+        char x_slug "CUSTOM SEO"
+        boolean x_is_published "CUSTOM"
+        char x_meta_title "CUSTOM"
+        text x_short_desc "CUSTOM"
+    }
+    PRODUCT_PRODUCT {
+        char default_code "variant SKU"
+        char barcode
+        float price_extra
+        m2o product_tmpl_id
+    }
+    PRODUCT_CATEGORY {
+        char name "internal/accounting"
+        m2o parent_id
+    }
+    BRAND {
+        char name "CUSTOM"
+        binary logo
+        char website
+    }
+    STOREFRONT_CATEGORY {
+        char name "CUSTOM"
+        m2o parent_id "tree"
+        binary image
+        char slug
+        int sequence
+    }
+    PRODUCT_TAG {
+        char name "Industry/Family/Spec"
+        selection tag_type
+    }
+    PRODUCT_IMAGE {
+        char name "CUSTOM gallery"
+        binary image
+        int sequence
+        m2o product_tmpl_id
+    }
+    PRODUCT_DOCUMENT {
+        selection doc_type "Cert/Manual/Datasheet"
+        char label "CUSTOM"
+        binary file
+        boolean is_public
+        m2o product_tmpl_id
+    }
+    PRODUCT_FEATURE {
+        char label "CUSTOM spec"
+        char value
+        char icon
+        int sequence
+        m2o product_tmpl_id
+    }
+    PRODUCT_ATTRIBUTE {
+        char name "Size/Color STD"
+        selection create_variant
+    }
+    ATTRIBUTE_VALUE {
+        char name "37..43 / colors"
+    }
+    ATTRIBUTE_LINE {
+        m2o product_tmpl_id
+        m2o attribute_id
+    }
+    UOM {
+        char name "Pair/Piece/Box"
+        m2o category_id
+    }
+
+    PRODUCT_TEMPLATE ||--o{ PRODUCT_PRODUCT : "variants"
+    PRODUCT_TEMPLATE }o--|| PRODUCT_CATEGORY : "categ_id (STD)"
+    PRODUCT_TEMPLATE }o--|| UOM : "uom_id (STD)"
+    PRODUCT_TEMPLATE }o--o| BRAND : "brand_id (CUSTOM)"
+    PRODUCT_TEMPLATE }o--o{ STOREFRONT_CATEGORY : "storefront (CUSTOM)"
+    PRODUCT_TEMPLATE }o--o{ PRODUCT_TAG : "tags (STD)"
+    PRODUCT_TEMPLATE ||--o{ PRODUCT_IMAGE : "gallery (CUSTOM)"
+    PRODUCT_TEMPLATE ||--o{ PRODUCT_DOCUMENT : "docs (CUSTOM)"
+    PRODUCT_TEMPLATE ||--o{ PRODUCT_FEATURE : "features (CUSTOM)"
+    PRODUCT_TEMPLATE ||--o{ ATTRIBUTE_LINE : "attribute lines"
+    ATTRIBUTE_LINE }o--|| PRODUCT_ATTRIBUTE : "attribute_id"
+    PRODUCT_ATTRIBUTE ||--o{ ATTRIBUTE_VALUE : "values"
+    PRODUCT_PRODUCT }o--o{ ATTRIBUTE_VALUE : "variant combo"
+    STOREFRONT_CATEGORY ||--o{ STOREFRONT_CATEGORY : "parent_id"
+    PRODUCT_CATEGORY ||--o{ PRODUCT_CATEGORY : "parent_id"
+
+    %% ---------- PURCHASING ----------
+    SUPPLIERINFO {
+        m2o partner_id "vendor"
+        char product_code
+        float price
+        int delay "lead time"
+    }
+    PRODUCT_TEMPLATE ||--o{ SUPPLIERINFO : "seller_ids (STD)"
+    SUPPLIERINFO }o--|| RES_PARTNER : "vendor"
+
+    %% ---------- INVENTORY ----------
+    STOCK_QUANT {
+        float quantity
+        float reserved_quantity
+        m2o product_id
+        m2o location_id
+    }
+    STOCK_LOCATION {
+        char name
+        selection usage
+        m2o warehouse_id
+    }
+    STOCK_WAREHOUSE {
+        char name "Main / Store"
+        char code
+    }
+    PRODUCT_PRODUCT ||--o{ STOCK_QUANT : "on hand (STD)"
+    STOCK_QUANT }o--|| STOCK_LOCATION : "location_id"
+    STOCK_LOCATION }o--|| STOCK_WAREHOUSE : "warehouse"
+
+    %% ---------- PRICING ----------
+    PRICELIST {
+        char name "B2C/Dealer/Tender"
+        m2o currency_id "MNT"
+    }
+    PRICELIST_ITEM {
+        selection compute_price
+        float fixed_price
+        float percent_price
+        m2o pricelist_id
+    }
+    PRICELIST ||--o{ PRICELIST_ITEM : "items (STD)"
+    PRICELIST_ITEM }o--o| PRODUCT_TEMPLATE : "applies to"
+
+    %% ---------- SALES / ORDER ----------
+    SALE_ORDER {
+        char name "SO ref"
+        m2o partner_id
+        m2o pricelist_id
+        selection state
+        float amount_total
+    }
+    SALE_ORDER_LINE {
+        m2o order_id
+        m2o product_id
+        float product_uom_qty
+        float price_unit
+    }
+    PAYMENT_TX {
+        char reference
+        float amount
+        selection state
+        m2o provider_id
+    }
+    PAYMENT_PROVIDER {
+        char name "QPay/Bank/Invoice"
+        selection code "CUSTOM for QPay"
+    }
+    SALE_ORDER ||--o{ SALE_ORDER_LINE : "lines (STD)"
+    SALE_ORDER_LINE }o--|| PRODUCT_PRODUCT : "product_id"
+    SALE_ORDER }o--|| RES_PARTNER : "customer"
+    SALE_ORDER }o--o| PRICELIST : "pricelist_id"
+    SALE_ORDER ||--o{ PAYMENT_TX : "transactions"
+    PAYMENT_TX }o--|| PAYMENT_PROVIDER : "provider"
+
+    %% ---------- PARTNER / CUSTOMER ----------
+    RES_PARTNER {
+        char name
+        selection company_type "person/company"
+        m2o parent_id "B2B hierarchy"
+        m2o property_product_pricelist
+        m2m category_id "B2C/B2B/Dealer tags"
+    }
+    RES_PARTNER ||--o{ RES_PARTNER : "parent_id (B2B)"
+    RES_PARTNER }o--o| PRICELIST : "assigned pricelist"

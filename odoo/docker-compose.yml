@@ -1,0 +1,63 @@
+# ============================================================
+#  safety_shop  —  Odoo 19 Community development environment
+# ------------------------------------------------------------
+#  PPE / occupational-safety eCommerce platform.
+#  Fully isolated from the existing "bodons_erp" environment:
+#    - unique compose project name
+#    - unique container names  (safety_shop_*)
+#    - unique volumes          (safety_shop_*)
+#    - unique host ports       (8079 / 8089 / 5440)
+#    - unique database user/db
+# ============================================================
+
+name: safety_shop
+
+services:
+  db:
+    image: postgres:16
+    container_name: safety_shop_db
+    environment:
+      POSTGRES_DB: postgres
+      POSTGRES_USER: odoo
+      POSTGRES_PASSWORD: odoo
+      PGDATA: /var/lib/postgresql/data/pgdata
+    volumes:
+      - safety_shop_db_data:/var/lib/postgresql/data/pgdata
+    ports:
+      # Host 5440 -> container 5432 (so it never clashes with bodons_erp's Postgres)
+      - "5440:5432"
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "odoo"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+  odoo:
+    image: odoo:19
+    container_name: safety_shop_odoo
+    depends_on:
+      db:
+        condition: service_healthy
+    ports:
+      # Host 8079 -> Odoo HTTP (8069)
+      - "8079:8069"
+      # Host 8089 -> Odoo websocket / longpolling (gevent, 8072)
+      - "8089:8072"
+    volumes:
+      - safety_shop_odoo_data:/var/lib/odoo       # filestore, sessions
+      - ./config:/etc/odoo                        # odoo.conf
+      - ./addons:/mnt/extra-addons                # custom addons (empty for now)
+    environment:
+      # The entrypoint reads these as fallbacks; odoo.conf takes precedence.
+      HOST: db
+      USER: odoo
+      PASSWORD: odoo
+    command: ["odoo", "-c", "/etc/odoo/odoo.conf"]
+    restart: unless-stopped
+
+volumes:
+  safety_shop_db_data:
+    name: safety_shop_db_data
+  safety_shop_odoo_data:
+    name: safety_shop_odoo_data

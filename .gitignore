@@ -1,0 +1,93 @@
+# Dependencies
+node_modules
+.pnp
+.pnp.js
+
+# Yarn 2+
+.yarn/*
+.yarn
+!.yarn/patches
+!.yarn/plugins
+!.yarn/releases
+!.yarn/sdks
+!.yarn/versions
+.pnp.*
+
+# Testing
+coverage
+
+# Next.js
+**/.next/
+**/out/
+
+# Production
+**/build
+**/dist
+
+# Misc
+*.pem
+
+# Debug
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Local env files
+**/.env
+**/.env.local
+**/.env.development.local
+**/.env.test.local
+**/.env.production.local
+
+# Turbo
+.turbo
+
+# vercel
+.vercel
+
+# macOS system files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+**/.DS_Store
+# ===== safety_shop — added for full-repo push =====
+# dependencies
+node_modules/
+**/node_modules/
+# next.js / turbo / builds
+.next/
+**/.next/
+dist/
+**/dist/
+out/
+.turbo/
+**/.turbo/
+# env & secrets
+.env
+.env.*
+!.env.example
+# python
+__pycache__/
+**/__pycache__/
+*.pyc
+# backups
+*.bak
+*.medusa.bak
+# large reference archive (scraped sites, old assets) — do NOT push
+_archive/
+# medusa backend build
+apps/backend/.medusa/
+# odoo local runtime
+odoo/data/
+*.log
+# OS
+.DS_Store
+Thumbs.db
+
+# scraped reference site (copyright + huge) — do NOT push
+apps/safety.mn/
+safety.mn/

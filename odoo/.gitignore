@@ -1,0 +1,32 @@
+# ===== Odoo / Docker runtime artifacts =====
+
+# Odoo filestore & sessions (also lives in a named volume, but ignore any local copies)
+/data/
+filestore/
+sessions/
+*.pid
+
+# Logs
+*.log
+logs/
+
+# Local environment overrides
+.env
+docker-compose.override.yml
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+
+# Editor / OS
+.idea/
+.vscode/
+*.swp
+.DS_Store
+Thumbs.db
+
+# Keep the addons folder tracked but ignore build junk inside it
+addons/**/__pycache__/

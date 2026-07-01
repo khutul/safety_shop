@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_safety_catalog_category_list" model="ir.ui.view">
+        <field name="name">safety.catalog.category.list</field>
+        <field name="model">safety.catalog.category</field>
+        <field name="arch" type="xml">
+            <list string="Storefront Categories">
+                <field name="sequence" widget="handle"/>
+                <field name="complete_name" string="Category"/>
+                <field name="parent_id"/>
+                <field name="slug"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_safety_catalog_category_form" model="ir.ui.view">
+        <field name="name">safety.catalog.category.form</field>
+        <field name="model">safety.catalog.category</field>
+        <field name="arch" type="xml">
+            <form string="Storefront Category">
+                <sheet>
+                    <field name="image" widget="image" class="oe_avatar"/>
+                    <div class="oe_title">
+                        <label for="name"/>
+                        <h1>
+                            <field name="name" placeholder="e.g. Hand Protection"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="parent_id"/>
+                            <field name="sequence"/>
+                        </group>
+                        <group>
+                            <field name="slug"/>
+                            <field name="active"/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_safety_catalog_category_search" model="ir.ui.view">
+        <field name="name">safety.catalog.category.search</field>
+        <field name="model">safety.catalog.category</field>
+        <field name="arch" type="xml">
+            <search string="Storefront Categories">
+                <field name="name"/>
+                <field name="parent_id"/>
+                <filter name="filter_archived" string="Archived"
+                        domain="[('active', '=', False)]"/>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_safety_catalog_category" model="ir.actions.act_window">
+        <field name="name">Storefront Categories</field>
+        <field name="res_model">safety.catalog.category</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <menuitem id="menu_safety_catalog_root"
+              name="Safety Catalog"
+              sequence="90"/>
+    <menuitem id="menu_safety_catalog_categories"
+              name="Storefront Categories"
+              parent="menu_safety_catalog_root"
+              action="action_safety_catalog_category"
+              sequence="10"/>
+
+</odoo>
