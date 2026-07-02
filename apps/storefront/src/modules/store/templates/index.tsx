@@ -26,20 +26,34 @@ async function resolveCategoryName(slug?: string): Promise<string> {
   }
 }
 
+async function resolveIndustryName(slug: string): Promise<string> {
+  try {
+    const res = await fetch(`${API}/industries?lang=mn`, { cache: "no-store" })
+    if (!res.ok) return "Салбар"
+    const items: Cat[] = await res.json()
+    const found = items.find((c) => c.slug === slug)
+    return found ? found.name : "Салбар"
+  } catch {
+    return "Салбар"
+  }
+}
+
 const StoreTemplate = async ({
   sortBy,
   page,
   category,
+  industry,
   countryCode,
 }: {
   sortBy?: SortOptions
   page?: string
   category?: string
+  industry?: string
   countryCode: string
 }) => {
   const pageNumber = page ? parseInt(page) : 1
   const sort = sortBy || "created_at"
-  const title = await resolveCategoryName(category)
+  const title = industry ? await resolveIndustryName(industry) : await resolveCategoryName(category)
 
   return (
     <div
@@ -61,6 +75,7 @@ const StoreTemplate = async ({
             sortBy={sort}
             page={pageNumber}
             category={category}
+            industry={industry}
             countryCode={countryCode}
           />
         </Suspense>

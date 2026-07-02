@@ -55,17 +55,20 @@ export default async function PaginatedProducts({
   sortBy,
   page,
   category,
+  industry,
   productsIds,
   countryCode,
 }: {
   sortBy?: SortOptions
   page: number
   category?: string
+  industry?: string
   productsIds?: string[]
   countryCode: string
 }) {
   const queryParams: any = { limit: PRODUCT_LIMIT }
   if (category) queryParams.category = category
+  if (industry) queryParams.industry = industry
   if (productsIds) queryParams.id = productsIds
   if (sortBy === "created_at") queryParams.order = "created_at"
 

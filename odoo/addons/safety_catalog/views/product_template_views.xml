@@ -16,6 +16,9 @@
                         <group string="Storefront Categories">
                             <field name="storefront_categ_ids" widget="many2many_tags" nolabel="1"/>
                         </group>
+                        <group string="Салбар (Industries)">
+                            <field name="industry_ids" widget="many2many_tags" nolabel="1"/>
+                        </group>
                     </group>
                     <group string="Descriptions">
                         <field name="short_description" placeholder="Товч танилцуулга (жагсаалт/картад харагдана)"/>

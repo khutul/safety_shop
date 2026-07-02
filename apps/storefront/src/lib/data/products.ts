@@ -59,6 +59,7 @@ export const listProducts = async ({
   const sp = new URLSearchParams({ lang: "mn", page: String(page), limit: String(limit) })
   if (queryParams?.q) sp.set("q", queryParams.q)
   if (queryParams?.category) sp.set("category", queryParams.category)
+  if (queryParams?.industry) sp.set("industry", queryParams.industry)
   if (queryParams?.brand) sp.set("brand", queryParams.brand)
   if (queryParams?.sort) sp.set("sort", queryParams.sort)
 

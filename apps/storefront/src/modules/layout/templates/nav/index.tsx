@@ -2,6 +2,7 @@ import { Suspense } from "react"
 import CartButton from "@modules/layout/components/cart-button"
 import LocalizedClientLink from "@modules/common/components/localized-client-link"
 import SidebarWrapper from "./sidebar-wrapper"
+import PrimaryMenu from "./primary-menu"
 import WolfLogo from "@modules/layout/components/wolf-logo"
 
 function CartIconSVG() {
@@ -13,15 +14,6 @@ function CartIconSVG() {
     </svg>
   )
 }
-
-const MENU: { label: string; href: string }[] = [
-  { label: "Нүүр хуудас", href: "/" },
-  { label: "Бүтээгдэхүүн", href: "/store" },
-  { label: "Брэндүүд", href: "/store" },
-  { label: "Салбарууд", href: "/store" },
-  { label: "Бидний тухай", href: "/about" },
-  { label: "Холбоо барих", href: "/about" },
-]
 
 export default async function Nav() {
   return (
@@ -66,15 +58,7 @@ export default async function Nav() {
             </a>
           </div>
         </div>
-        <nav style={{ background: "#181818", borderTop: "1px solid #232323" }}>
-          <div style={{ maxWidth: 1340, margin: "0 auto", padding: "0 12px", display: "flex", alignItems: "center", height: 46 }}>
-            {MENU.map((m) => (
-              <LocalizedClientLink key={m.label} href={m.href} className="ms-navlink">
-                {m.label}
-              </LocalizedClientLink>
-            ))}
-          </div>
-        </nav>
+        <PrimaryMenu />
       </header>
     </div>
   )

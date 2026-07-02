@@ -17,6 +17,10 @@ class ProductTemplate(models.Model):
         comodel_name="safety.catalog.category",
         string="Storefront Categories",
     )
+    industry_ids = fields.Many2many(
+        comodel_name="safety.site.industry",
+        string="Storefront Industries",
+    )
 
     # --- Storefront content ---
     short_description = fields.Text(string="Short Description", translate=True)

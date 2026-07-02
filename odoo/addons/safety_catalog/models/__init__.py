@@ -7,3 +7,4 @@ from . import safety_catalog_product_feature
 from . import product_template
 from . import safety_site_hero
 from . import safety_site_settings
+from . import safety_site_industry

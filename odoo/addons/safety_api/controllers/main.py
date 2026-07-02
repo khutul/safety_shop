@@ -32,12 +32,17 @@ class SafetyCatalogAPI(http.Controller):
                 methods=["GET"], csrf=False, cors="*")
     def categories(self, **kw):
         cats = request.env["safety.catalog.category"].sudo().with_context(**_lang_ctx(kw)).search([])
+        Product = request.env["product.template"].sudo()
         by_id = {}
         for c in cats:
             by_id[c.id] = {
                 "id": c.id, "name": c.name, "slug": c.slug or "",
                 "parent_id": c.parent_id.id or None, "sequence": c.sequence,
                 "image_url": ("/api/v1/categories/%s/image" % c.id) if c.image else None,
+                "count": Product.search_count([
+                    ("storefront_published", "=", True),
+                    ("storefront_categ_ids", "in", c.id),
+                ]),
                 "children": [],
             }
         roots = []
@@ -62,6 +67,7 @@ class SafetyCatalogAPI(http.Controller):
         brands = request.env["safety.catalog.brand"].sudo().search([])
         data = [{
             "id": b.id, "name": b.name, "slug": b.slug or "",
+            "website": b.website or "",
             "logo_url": ("/api/v1/brands/%s/logo" % b.id) if b.logo else None,
         } for b in brands]
         return request.make_json_response(data)
@@ -71,6 +77,24 @@ class SafetyCatalogAPI(http.Controller):
     def brand_logo(self, brand_id, **kw):
         rec = request.env["safety.catalog.brand"].sudo().browse(brand_id)
         return self._image_response(rec, "logo")
+
+    # ---------------- Industries (Салбар) ----------------
+    @http.route("/api/v1/industries", type="http", auth="public",
+                methods=["GET"], csrf=False, cors="*")
+    def industries(self, **kw):
+        recs = request.env["safety.site.industry"].sudo().with_context(**_lang_ctx(kw)).search(
+            [("active", "=", True)], order="sequence, id")
+        data = [{
+            "id": r.id, "name": r.name, "slug": r.slug or "",
+            "image_url": ("/api/v1/industries/%s/image" % r.id) if r.image else None,
+        } for r in recs]
+        return request.make_json_response(data)
+
+    @http.route("/api/v1/industries/<int:ind_id>/image", type="http",
+                auth="public", csrf=False, cors="*")
+    def industry_image(self, ind_id, **kw):
+        rec = request.env["safety.site.industry"].sudo().browse(ind_id)
+        return self._image_response(rec, "image")
 
     # ---------------- Products (list) ----------------
     @http.route("/api/v1/products", type="http", auth="public",
@@ -82,6 +106,8 @@ class SafetyCatalogAPI(http.Controller):
             domain.append(("storefront_categ_ids.slug", "=", kw["category"]))
         if kw.get("brand"):
             domain.append(("brand_id.slug", "=", kw["brand"]))
+        if kw.get("industry"):
+            domain.append(("industry_ids.slug", "=", kw["industry"]))
         if kw.get("q"):
             domain.append(("name", "ilike", kw["q"]))
         order = {

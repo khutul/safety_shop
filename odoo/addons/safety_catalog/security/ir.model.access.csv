@@ -10,3 +10,5 @@ access_safety_site_hero_user,safety.site.hero.user,model_safety_site_hero,base.g
 access_safety_site_hero_manager,safety.site.hero.manager,model_safety_site_hero,base.group_system,1,1,1,1
 access_safety_site_settings_user,safety.site.settings.user,model_safety_site_settings,base.group_user,1,0,0,0
 access_safety_site_settings_manager,safety.site.settings.manager,model_safety_site_settings,base.group_system,1,1,1,1
+access_safety_site_industry_user,safety.site.industry.user,model_safety_site_industry,base.group_user,1,0,0,0
+access_safety_site_industry_manager,safety.site.industry.manager,model_safety_site_industry,base.group_system,1,1,1,1

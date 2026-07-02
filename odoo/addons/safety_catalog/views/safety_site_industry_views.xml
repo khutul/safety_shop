@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_safety_site_industry_list" model="ir.ui.view">
+        <field name="name">safety.site.industry.list</field>
+        <field name="model">safety.site.industry</field>
+        <field name="arch" type="xml">
+            <list string="Industries">
+                <field name="sequence" widget="handle"/>
+                <field name="name"/>
+                <field name="slug"/>
+                <field name="active"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_safety_site_industry_form" model="ir.ui.view">
+        <field name="name">safety.site.industry.form</field>
+        <field name="model">safety.site.industry</field>
+        <field name="arch" type="xml">
+            <form string="Industry">
+                <sheet>
+                    <field name="image" widget="image" class="oe_avatar"/>
+                    <div class="oe_title">
+                        <label for="name"/>
+                        <h1><field name="name" placeholder="ж: Уул уурхай"/></h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="slug" placeholder="ж: mining"/>
+                            <field name="sequence"/>
+                        </group>
+                        <group>
+                            <field name="active"/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_safety_site_industry" model="ir.actions.act_window">
+        <field name="name">Салбар</field>
+        <field name="res_model">safety.site.industry</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <menuitem id="menu_safety_site_industry" name="Салбар"
+              parent="menu_safety_catalog_root" action="action_safety_site_industry" sequence="15"/>
+
+</odoo>
