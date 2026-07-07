@@ -2,8 +2,8 @@
 import { useEffect, useState } from "react"
 import LocalizedClientLink from "@modules/common/components/localized-client-link"
 
-const API = process.env.NEXT_PUBLIC_ODOO_API_URL || "http://localhost:8079/api/v1"
-const BASE = process.env.NEXT_PUBLIC_ODOO_BASE_URL || "http://localhost:8079"
+const API = typeof window === "undefined" ? (process.env.ODOO_INTERNAL_URL || "http://localhost:8079") + "/api/v1" : "/api/v1"
+const BASE = ""
 
 type Industry = { id: number; name: string; slug: string; image_url?: string | null }
 
@@ -58,7 +58,7 @@ export default function IndustrySection() {
     let alive = true
     ;(async () => {
       try {
-        const res = await fetch(`${API}/industries?lang=mn`, { cache: "no-store" })
+        const res = await fetch(`${API}/industries?lang=mn`)
         if (!res.ok) return
         const data = await res.json()
         if (alive && Array.isArray(data) && data.length) setItems(data)
@@ -72,15 +72,15 @@ export default function IndustrySection() {
   }, [])
 
   return (
-    <div style={{ background: "#ffffff", padding: "34px 0 34px" }}>
+    <div style={{ background: "#161616", padding: "40px 0", borderTop: "1px solid var(--ms-border-soft)" }}>
       <div className="ms-container">
-        <div className="ms-sechead">
+        <div className="ms-sechead on-dark">
           <div className="bar" />
           <span className="title">Салбараар хайх</span>
           <div className="rule" />
           <LocalizedClientLink href="/store" className="more">Бүгд →</LocalizedClientLink>
         </div>
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(6,1fr)", gap: 6 }}>
+        <div className="ms-grid-industries">
           {items.map((ind) => <IndustryCard key={ind.id} ind={ind} />)}
         </div>
       </div>

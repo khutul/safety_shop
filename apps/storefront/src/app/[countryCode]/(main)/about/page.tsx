@@ -7,7 +7,7 @@ export const metadata: Metadata = {
     "МАНАДА ХХК — хөдөлмөр хамгааллын хувцас, хамгаалах хэрэгслийн итгэлт түнш. Safetoe, Safeyear брэндийн Монгол дахь албан ёсны дистрибютор.",
 }
 
-const API = process.env.NEXT_PUBLIC_ODOO_API_URL || "http://localhost:8079/api/v1"
+const API = typeof window === "undefined" ? (process.env.ODOO_INTERNAL_URL || "http://localhost:8079") + "/api/v1" : "/api/v1"
 
 type SiteSettings = {
   phone?: string
@@ -21,7 +21,7 @@ type SiteSettings = {
 
 async function getSettings(): Promise<SiteSettings> {
   try {
-    const res = await fetch(`${API}/site/settings?lang=mn`, { cache: "no-store" })
+    const res = await fetch(`${API}/site/settings?lang=mn`, { next: { revalidate: 300 } })
     if (!res.ok) return {}
     return await res.json()
   } catch {

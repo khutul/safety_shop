@@ -8,7 +8,7 @@ class SafetyCatalogCategory(models.Model):
     _description = "Storefront Category"
     _parent_name = "parent_id"
     _parent_store = True
-    _order = "complete_name"
+    _order = "sequence, complete_name"
 
     name = fields.Char(string="Name", required=True, translate=True)
     complete_name = fields.Char(

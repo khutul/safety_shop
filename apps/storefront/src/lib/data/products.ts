@@ -3,8 +3,8 @@
 import { HttpTypes } from "@medusajs/types"
 import { SortOptions } from "@modules/store/components/refinement-list/sort-products"
 
-const API = process.env.NEXT_PUBLIC_ODOO_API_URL || "http://localhost:8079/api/v1"
-const BASE = process.env.NEXT_PUBLIC_ODOO_BASE_URL || "http://localhost:8079"
+const API = typeof window === "undefined" ? (process.env.ODOO_INTERNAL_URL || "http://localhost:8079") + "/api/v1" : "/api/v1"
+const BASE = ""
 
 function toStoreProduct(p: any): HttpTypes.StoreProduct {
   const amount = p.price || 0
@@ -12,19 +12,23 @@ function toStoreProduct(p: any): HttpTypes.StoreProduct {
     p.variants && p.variants.length
       ? p.variants
       : [{ id: `${p.id}-def`, size: "", color: "", sku: "", price: amount, qty_available: p.in_stock ? 10 : 0 }]
-  const variants = rawVariants.map((v: any) => ({
-    id: String(v.id),
-    title: [v.size, v.color].filter(Boolean).join(" / ") || "Default",
-    sku: v.sku || "",
-    inventory_quantity: v.qty_available ?? (p.in_stock ? 10 : 0),
-    manage_inventory: true,
-    calculated_price: {
-      calculated_amount: v.price ?? amount,
-      original_amount: v.price ?? amount,
-      currency_code: "mnt",
-      calculated_price: { price_list_type: "default" },
-    },
-  }))
+  const variants = rawVariants.map((v: any) => {
+    const calc = v.price ?? amount
+    const orig = v.old_price ?? p.old_price ?? calc
+    return {
+      id: String(v.id),
+      title: [v.size, v.color].filter(Boolean).join(" / ") || "Default",
+      sku: v.sku || "",
+      inventory_quantity: v.qty_available ?? (p.in_stock ? 10 : 0),
+      manage_inventory: true,
+      calculated_price: {
+        calculated_amount: calc,
+        original_amount: orig,
+        currency_code: "mnt",
+        calculated_price: { price_list_type: orig > calc ? "sale" : "default" },
+      },
+    }
+  })
   return {
     id: String(p.id),
     title: p.name,
@@ -59,11 +63,13 @@ export const listProducts = async ({
   const sp = new URLSearchParams({ lang: "mn", page: String(page), limit: String(limit) })
   if (queryParams?.q) sp.set("q", queryParams.q)
   if (queryParams?.category) sp.set("category", queryParams.category)
+  if (queryParams?.category_id) sp.set("category_id", String(queryParams.category_id))
   if (queryParams?.industry) sp.set("industry", queryParams.industry)
   if (queryParams?.brand) sp.set("brand", queryParams.brand)
+  if (queryParams?.brand_id) sp.set("brand_id", String(queryParams.brand_id))
   if (queryParams?.sort) sp.set("sort", queryParams.sort)
 
-  const res = await fetch(`${API}/products?${sp.toString()}`, { cache: "no-store" })
+  const res = await fetch(`${API}/products?${sp.toString()}`, { next: { revalidate: 60 } })
   if (!res.ok) return { response: { products: [], count: 0 }, nextPage: null, queryParams }
   const data = await res.json()
   const products = (data.products || []).map(toStoreProduct)

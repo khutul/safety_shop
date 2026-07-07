@@ -78,6 +78,12 @@ html, body {
   text-transform: uppercase;
   color: #151515;
   white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  min-width: 0;
+}
+@media (max-width: 640px) {
+  .ms-sechead .title { font-size: 17px; }
 }
 .ms-sechead .rule {
   flex: 1;
@@ -179,6 +185,200 @@ html, body {
   transform: translateY(-3px);
   box-shadow: 0 10px 28px rgba(0, 0, 0, 0.14);
   border-color: #e0e0e0;
+}
+
+/* Dark product card (brand theme) */
+.ms-card-dark {
+  background: var(--ms-surface);
+  border-radius: var(--ms-radius);
+  border: 1px solid var(--ms-border);
+  overflow: hidden;
+  transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s;
+}
+.ms-card-dark:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--ms-shadow-lift);
+  border-color: rgba(255, 204, 0, 0.45);
+}
+
+/* Image placeholder for products without photos */
+.ms-imgph {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  width: 100%;
+  height: 100%;
+  background:
+    repeating-linear-gradient(-45deg, transparent 0 14px, rgba(0, 0, 0, 0.025) 14px 28px),
+    #f4f5f7;
+}
+.ms-imgph svg { opacity: 0.5; }
+.ms-imgph span {
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #b9bec7;
+}
+
+/* Dark category tile */
+.ms-cattile {
+  background: var(--ms-surface);
+  border: 1px solid var(--ms-border);
+  border-radius: var(--ms-radius);
+  overflow: hidden;
+  text-align: center;
+  cursor: pointer;
+  transition: transform 0.18s ease, border-color 0.18s, box-shadow 0.18s;
+}
+.ms-cattile:hover {
+  transform: translateY(-3px);
+  border-color: rgba(255, 204, 0, 0.5);
+  box-shadow: var(--ms-shadow);
+}
+.ms-cattile .ttl {
+  font-size: 12px;
+  font-weight: 700;
+  color: rgba(255, 255, 255, 0.85);
+  text-transform: uppercase;
+  line-height: 1.25;
+  transition: color 0.18s;
+}
+.ms-cattile:hover .ttl { color: var(--ms-gold); }
+
+/* ============================================================
+   Responsive grids (mobile-first)
+   ============================================================ */
+.ms-grid-cats,
+.ms-grid-products,
+.ms-grid-industries {
+  min-width: 0;
+}
+.ms-grid-cats > *,
+.ms-grid-products > *,
+.ms-grid-industries > *,
+.ms-cart-grid > *,
+.ms-pdp-grid > * {
+  min-width: 0;
+}
+.ms-grid-cats {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+}
+.ms-grid-products {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+}
+.ms-grid-industries {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 6px;
+}
+.ms-trustgrid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+}
+.ms-pdp-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 28px;
+}
+.ms-cart-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 20px;
+  align-items: start;
+}
+.ms-lookup-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 14px;
+}
+@media (min-width: 640px) {
+  .ms-grid-cats { grid-template-columns: repeat(3, 1fr); gap: 14px; }
+  .ms-grid-products { grid-template-columns: repeat(3, 1fr); gap: 14px; }
+  .ms-grid-industries { grid-template-columns: repeat(3, 1fr); }
+  .ms-lookup-grid { grid-template-columns: 1fr 1fr; }
+}
+@media (min-width: 900px) {
+  .ms-trustgrid { grid-template-columns: repeat(4, 1fr); }
+  .ms-pdp-grid { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 40px; }
+}
+@media (min-width: 1024px) {
+  .ms-grid-cats { grid-template-columns: repeat(5, 1fr); }
+  .ms-grid-products { grid-template-columns: repeat(6, 1fr); }
+  .ms-grid-industries { grid-template-columns: repeat(6, 1fr); }
+  .ms-cart-grid { grid-template-columns: minmax(0, 1fr) 380px; gap: 24px; }
+}
+
+/* Header pieces that must hide on small screens */
+@media (max-width: 900px) {
+  .ms-hide-mobile { display: none !important; }
+}
+/* Pieces that only appear on small screens */
+.ms-show-mobile { display: none !important; }
+@media (max-width: 900px) {
+  .ms-show-mobile { display: flex !important; }
+}
+/* Nav menu row scrolls horizontally on mobile */
+.ms-navrow {
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+.ms-navrow::-webkit-scrollbar { display: none; }
+
+/* Mega menu / sidebar dropdown columns */
+.ms-megagrid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 20px 32px;
+}
+@media (min-width: 640px) {
+  .ms-megagrid { grid-template-columns: repeat(2, 1fr); }
+}
+@media (min-width: 1024px) {
+  .ms-megagrid { grid-template-columns: repeat(4, 1fr); }
+}
+
+/* Why-band stats grid */
+.ms-whygrid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+}
+@media (min-width: 640px) {
+  .ms-whygrid { grid-template-columns: repeat(3, 1fr); gap: 14px; }
+}
+@media (min-width: 1024px) {
+  .ms-whygrid { grid-template-columns: repeat(6, 1fr); }
+}
+
+/* Three-card grid (testimonials etc.) */
+.ms-grid-3 {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 14px;
+}
+@media (min-width: 900px) {
+  .ms-grid-3 { grid-template-columns: repeat(3, 1fr); }
+}
+
+/* Footer columns */
+.ms-footgrid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 32px;
+  padding: 40px 0 32px;
+}
+@media (min-width: 640px) {
+  .ms-footgrid { grid-template-columns: 1fr 1fr; }
+}
+@media (min-width: 1024px) {
+  .ms-footgrid { grid-template-columns: 2.2fr 1fr 1fr 1fr; gap: 40px; }
 }
 
 @layer utilities {
@@ -287,5 +487,76 @@ html, body {
 
   .text-3xl-semi {
     @apply text-[32px] leading-[44px] font-semibold;
+  }
+}
+
+/* ============================================================
+   Mockup redesign additions (2026-07)
+   ============================================================ */
+
+/* Quick-category chip cards under the hero */
+.ms-chip {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex: 1 0 auto;
+  min-width: 168px;
+  background: #161616;
+  border: 1px solid #2c2c2c;
+  border-radius: 4px;
+  padding: 14px 20px;
+  text-decoration: none;
+  color: rgba(255, 255, 255, 0.9);
+  font-size: 13.5px;
+  font-weight: 700;
+  white-space: nowrap;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.45);
+  transition: border-color 0.18s, transform 0.18s, background 0.18s;
+}
+.ms-chip:hover {
+  border-color: var(--ms-gold);
+  background: #1b1b1b;
+  transform: translateY(-2px);
+}
+
+/* Two-line title clamp for product cards */
+.ms-clamp2 {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  min-height: 2.6em;
+}
+
+/* Brand logo marquee — continuous right-to-left scroll, pauses on hover */
+.ms-marquee {
+  overflow: hidden;
+  position: relative;
+}
+.ms-marquee-track {
+  display: flex;
+  width: max-content;
+  animation: ms-marquee-scroll var(--ms-marquee-duration, 32s) linear infinite;
+}
+.ms-marquee:hover .ms-marquee-track {
+  animation-play-state: paused;
+}
+@keyframes ms-marquee-scroll {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .ms-marquee-track { animation: none; }
+}
+
+/* Boxed hero inner padding — tighter on phones */
+.ms-hero-inner {
+  padding: 28px 56px;
+  min-height: 340px;
+}
+@media (max-width: 640px) {
+  .ms-hero-inner {
+    padding: 22px 18px;
+    min-height: 280px;
   }
 }

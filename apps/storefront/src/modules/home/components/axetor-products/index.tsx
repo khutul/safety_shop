@@ -203,17 +203,9 @@ function EmptyProducts() {
       <div style={{ fontSize: 16, fontWeight: 700, color: "#374151", marginBottom: 6, textTransform: "uppercase" }}>
         Бүтээгдэхүүн байхгүй байна
       </div>
-      <div style={{ fontSize: 13, color: "#9ca3af", marginBottom: 16 }}>
-        Odoo дээр бүтээгдэхүүн нэмээд "Вэбд нийтлэх" төлөвт оруулна уу
+      <div style={{ fontSize: 13, color: "#9ca3af" }}>
+        Бүтээгдэхүүн удахгүй нэмэгдэнэ.
       </div>
-      <a href="http://localhost:8079/web" style={{
-        background: "#FFCC00", color: "#151515",
-        fontSize: 12, fontWeight: 700,
-        padding: "8px 20px", borderRadius: 2,
-        textDecoration: "none", display: "inline-block",
-      }}>
-        Удирдлагын хэсэг
-      </a>
     </div>
   )
 }

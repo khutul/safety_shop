@@ -18,6 +18,17 @@ const nextConfig = {
       fullUrl: true,
     },
   },
+  // Proxy Odoo API through the storefront so phones/other devices on the
+  // network (which cannot reach "localhost:8079") still get data and images.
+  async rewrites() {
+    const odoo = process.env.ODOO_INTERNAL_URL || "http://localhost:8079"
+    return [
+      {
+        source: "/api/v1/:path*",
+        destination: `${odoo}/api/v1/:path*`,
+      },
+    ]
+  },
   eslint: {
     ignoreDuringBuilds: true,
   },

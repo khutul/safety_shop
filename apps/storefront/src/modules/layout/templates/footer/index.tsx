@@ -1,11 +1,36 @@
 import LocalizedClientLink from "@modules/common/components/localized-client-link"
 
-const API = process.env.NEXT_PUBLIC_ODOO_API_URL || "http://localhost:8079/api/v1"
+const API = typeof window === "undefined" ? (process.env.ODOO_INTERNAL_URL || "http://localhost:8079") + "/api/v1" : "/api/v1"
 
 const LINK_COLS = [
-  { title: "Бүтээгдэхүүн", links: ["Ажлын хувцас", "Гутал", "Толгой хамгаалалт", "Бээлий", "Маск", "Нүд хамгаалалт"] },
-  { title: "Компани", links: ["Бидний тухай", "Захиалга өгөх", "Тендер нийлүүлэлт", "Холбоо барих"] },
-  { title: "Мэдээлэл", links: ["Хүргэлтийн журам", "Буцаалтын журам", "Нууцлалын бодлого"] },
+  {
+    title: "Бүтээгдэхүүн",
+    links: [
+      { label: "Ажлын хувцас", href: "/store" },
+      { label: "Гутал", href: "/store" },
+      { label: "Толгой хамгаалалт", href: "/store" },
+      { label: "Бээлий", href: "/store" },
+      { label: "Маск", href: "/store" },
+      { label: "Нүд хамгаалалт", href: "/store" },
+    ],
+  },
+  {
+    title: "Компани",
+    links: [
+      { label: "Бидний тухай", href: "/about" },
+      { label: "Захиалга өгөх", href: "/store" },
+      { label: "Захиалга шалгах", href: "/order-status" },
+      { label: "Холбоо барих", href: "/about" },
+    ],
+  },
+  {
+    title: "Мэдээлэл",
+    links: [
+      { label: "Хүргэлтийн журам", href: "/about" },
+      { label: "Буцаалтын журам", href: "/about" },
+      { label: "Нууцлалын бодлого", href: "/about" },
+    ],
+  },
 ]
 
 type SiteSettings = {
@@ -20,7 +45,7 @@ type SiteSettings = {
 
 async function getSettings(): Promise<SiteSettings> {
   try {
-    const res = await fetch(`${API}/site/settings?lang=mn`, { cache: "no-store" })
+    const res = await fetch(`${API}/site/settings?lang=mn`, { next: { revalidate: 300 } })
     if (!res.ok) return {}
     return await res.json()
   } catch {
@@ -50,7 +75,7 @@ export default async function Footer() {
     <footer style={{ background: "#111111" }}>
       <div style={{ height: 3, background: "linear-gradient(90deg, #FFCC00 0%, #FFE066 50%, #FFCC00 100%)" }} />
       <div style={{ maxWidth: 1340, margin: "0 auto", padding: "0 16px" }}>
-        <div style={{ display: "grid", gridTemplateColumns: "2.2fr 1fr 1fr 1fr", gap: 40, padding: "40px 0 32px" }}>
+        <div className="ms-footgrid">
           <div>
             <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 16 }}>
               {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -70,9 +95,16 @@ export default async function Footer() {
                 </a>
               ))}
             </div>
-            <div style={{ display: "flex", gap: 8 }}>
-              <a href={facebook} target="_blank" rel="noreferrer" style={{ background: "#1877f2", color: "#fff", fontSize: 11, fontWeight: 700, padding: "6px 14px", borderRadius: 2, textDecoration: "none" }}>Facebook</a>
-              <a href={instagram} target="_blank" rel="noreferrer" style={{ background: "#e4405f", color: "#fff", fontSize: 11, fontWeight: 700, padding: "6px 14px", borderRadius: 2, textDecoration: "none" }}>Instagram</a>
+            <div style={{ display: "flex", gap: 10 }}>
+              <a href={facebook} target="_blank" rel="noreferrer" aria-label="Facebook" title="Facebook" style={{ width: 36, height: 36, borderRadius: "50%", background: "#1A1A1A", border: "1px solid #2A2A2A", color: "rgba(255,255,255,0.7)", display: "flex", alignItems: "center", justifyContent: "center", textDecoration: "none" }}>
+                <svg width="16" height="16" fill="currentColor" viewBox="0 0 24 24"><path d="M13.5 21v-8h2.7l.4-3.1h-3.1V7.9c0-.9.25-1.5 1.55-1.5H16.7V3.6c-.3-.04-1.3-.13-2.5-.13-2.4 0-4.1 1.5-4.1 4.2v2.3H7.4V13h2.7v8h3.4z" /></svg>
+              </a>
+              <a href={instagram} target="_blank" rel="noreferrer" aria-label="Instagram" title="Instagram" style={{ width: 36, height: 36, borderRadius: "50%", background: "#1A1A1A", border: "1px solid #2A2A2A", color: "rgba(255,255,255,0.7)", display: "flex", alignItems: "center", justifyContent: "center", textDecoration: "none" }}>
+                <svg width="16" height="16" fill="none" stroke="currentColor" strokeWidth="1.8" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="5" /><circle cx="12" cy="12" r="4" /><circle cx="17.2" cy="6.8" r="0.6" fill="currentColor" /></svg>
+              </a>
+              <a href={telHref} aria-label="Утас" title="Залгах" style={{ width: 36, height: 36, borderRadius: "50%", background: "#FFCC00", color: "#151515", display: "flex", alignItems: "center", justifyContent: "center", textDecoration: "none" }}>
+                <svg width="15" height="15" fill="currentColor" viewBox="0 0 24 24"><path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z" /></svg>
+              </a>
             </div>
           </div>
           {LINK_COLS.map((col) => (
@@ -80,7 +112,7 @@ export default async function Footer() {
               <div style={{ fontSize: 11, fontWeight: 800, color: "#FFCC00", textTransform: "uppercase", letterSpacing: "0.12em", marginBottom: 16, paddingBottom: 8, borderBottom: "1px solid #2A2A2A" }}>{col.title}</div>
               <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
                 {col.links.map((link) => (
-                  <LocalizedClientLink key={link} href="/store" style={{ color: "rgba(255,255,255,0.45)", fontSize: 12, textDecoration: "none" }}>{link}</LocalizedClientLink>
+                  <LocalizedClientLink key={link.label} href={link.href} style={{ color: "rgba(255,255,255,0.45)", fontSize: 12, textDecoration: "none" }}>{link.label}</LocalizedClientLink>
                 ))}
               </div>
             </div>

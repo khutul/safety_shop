@@ -1,9 +1,9 @@
 import { Suspense } from "react"
 import CartButton from "@modules/layout/components/cart-button"
+import SearchBox from "@modules/layout/components/search-box"
 import LocalizedClientLink from "@modules/common/components/localized-client-link"
 import SidebarWrapper from "./sidebar-wrapper"
 import PrimaryMenu from "./primary-menu"
-import WolfLogo from "@modules/layout/components/wolf-logo"
 
 function CartIconSVG() {
   return (
@@ -15,36 +15,66 @@ function CartIconSVG() {
   )
 }
 
+const UTIL_LEFT = [
+  { icon: "✓", label: "100% жинхэнэ бараа" },
+  { icon: "🚚", label: "Үнэгүй хүргэлт (100,000₮-с дээш)" },
+  { icon: "⏱", label: "УБ хотод 24 цагийн дотор" },
+]
+
 export default async function Nav() {
   return (
     <div className="sticky top-0 inset-x-0 z-50">
+      {/* ── Utility bar ── */}
+      <div className="ms-hide-mobile" style={{ background: "#0C0C0C", borderBottom: "1px solid #1c1c1c" }}>
+        <div style={{ maxWidth: 1340, margin: "0 auto", padding: "0 16px", display: "flex", alignItems: "center", height: 32, gap: 22 }}>
+          {UTIL_LEFT.map((u) => (
+            <span key={u.label} style={{ display: "flex", alignItems: "center", gap: 6, fontSize: 11, color: "rgba(255,255,255,0.5)" }}>
+              <span style={{ color: "#FFCC00", fontSize: 11 }}>{u.icon}</span>
+              {u.label}
+            </span>
+          ))}
+          <div style={{ marginLeft: "auto", display: "flex", alignItems: "center", gap: 20 }}>
+            <LocalizedClientLink href="/order-status" style={{ fontSize: 11, color: "rgba(255,255,255,0.55)", textDecoration: "none" }}>
+              Захиалга шалгах
+            </LocalizedClientLink>
+            <LocalizedClientLink href="/about" style={{ fontSize: 11, color: "rgba(255,255,255,0.55)", textDecoration: "none" }}>
+              Бидэнтэй холбогдох
+            </LocalizedClientLink>
+            <a href="mailto:info@manadasafety.mn" style={{ fontSize: 11, color: "rgba(255,255,255,0.55)", textDecoration: "none" }}>
+              Хэрэглэгчийн дэмжлэг
+            </a>
+          </div>
+        </div>
+      </div>
+
+      {/* ── Main row ── */}
       <header style={{ background: "#151515", borderBottom: "1px solid #2A2A2A", boxShadow: "0 2px 16px rgba(0,0,0,0.4)" }}>
-        <div style={{ maxWidth: 1340, margin: "0 auto", padding: "0 16px", display: "flex", alignItems: "center", height: 64, gap: 14 }}>
-          <SidebarWrapper />
+        <div style={{ maxWidth: 1340, margin: "0 auto", padding: "0 16px", display: "flex", alignItems: "center", height: 64, gap: 16 }}>
           <LocalizedClientLink href="/" style={{ textDecoration: "none", flexShrink: 0 }}>
             <div style={{ display: "flex", alignItems: "center", gap: 11 }}>
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img src="/manada-logo-light.png" alt="Manada Safety" style={{ height: 42, width: "auto", display: "block" }} />
-              <div style={{ lineHeight: 1.12 }}>
+              <div className="ms-hide-mobile" style={{ lineHeight: 1.12 }}>
                 <div style={{ fontSize: 19, fontWeight: 900, color: "#FFCC00", letterSpacing: "0.05em", textTransform: "uppercase", fontFamily: "var(--ms-font-display)" }}>MANADA</div>
                 <div style={{ fontSize: 9, color: "rgba(255,255,255,0.55)", letterSpacing: "0.24em", textTransform: "uppercase" }}>SAFETY MN</div>
               </div>
             </div>
           </LocalizedClientLink>
-          <div style={{ width: 1, height: 30, background: "#2A2A2A", flexShrink: 0 }} />
-          <div style={{ flex: 1, maxWidth: 440, background: "#252525", border: "1px solid #333", borderRadius: 3, display: "flex", alignItems: "center", overflow: "hidden" }}>
-            <button style={{ background: "none", border: "none", cursor: "pointer", padding: "8px 10px 8px 14px", color: "#FFCC00", flexShrink: 0 }}>
-              <svg width="17" height="17" fill="currentColor" viewBox="0 0 24 24">
-                <path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z" />
-              </svg>
-            </button>
-            <input type="text" placeholder="Бүтээгдэхүүн хайх..." style={{ background: "none", border: "none", outline: "none", flex: 1, padding: "9px 12px 9px 0", fontSize: 13, color: "#e0e0e0" }} />
+
+          <SidebarWrapper />
+
+          <div className="ms-hide-mobile" style={{ flex: 1, display: "flex", justifyContent: "center" }}>
+            <SearchBox />
           </div>
-          <div style={{ display: "flex", gap: 8, alignItems: "center", marginLeft: "auto" }}>
-            <LocalizedClientLink href="/account" style={{ color: "rgba(255,255,255,0.6)", textDecoration: "none", display: "flex", alignItems: "center", padding: "6px 8px" }}>
-              <svg width="22" height="22" fill="currentColor" viewBox="0 0 24 24">
-                <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" />
+
+          <div style={{ display: "flex", gap: 6, alignItems: "center", marginLeft: "auto", flexShrink: 0 }}>
+            <LocalizedClientLink href="/order-status" style={{ color: "rgba(255,255,255,0.6)", textDecoration: "none", display: "flex", alignItems: "center", gap: 7, padding: "6px 8px" }}>
+              <svg width="22" height="22" fill="none" stroke="currentColor" strokeWidth="1.8" viewBox="0 0 24 24">
+                <path d="M9 5h6a1 1 0 0 1 1 1v14a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V9z" />
+                <path d="M9 5a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2" />
+                <path d="M9 12l2 2 4-4" />
               </svg>
+              <span className="ms-hide-mobile" style={{ fontSize: 12, color: "rgba(255,255,255,0.6)" }}>Захиалга шалгах</span>
             </LocalizedClientLink>
             <Suspense fallback={
               <LocalizedClientLink href="/cart" style={{ color: "rgba(255,255,255,0.6)", textDecoration: "none", padding: "6px 8px", display: "flex", alignItems: "center" }}>
@@ -53,9 +83,6 @@ export default async function Nav() {
             }>
               <CartButton />
             </Suspense>
-            <a href="tel:+97699102250" style={{ border: "1px solid #FFCC00", color: "#FFCC00", fontSize: 12, fontWeight: 700, padding: "7px 16px", borderRadius: 2, textDecoration: "none", whiteSpace: "nowrap" }}>
-              99102250
-            </a>
           </div>
         </div>
         <PrimaryMenu />

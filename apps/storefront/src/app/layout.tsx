@@ -1,4 +1,5 @@
 import { getBaseURL } from "@lib/util/env"
+import { CartProvider } from "@lib/cart/cart-context"
 import { Metadata } from "next"
 import "styles/globals.css"
 
@@ -22,7 +23,9 @@ export default function RootLayout(props: { children: React.ReactNode }) {
         />
       </head>
       <body>
-        <main className="relative">{props.children}</main>
+        <CartProvider>
+          <main className="relative">{props.children}</main>
+        </CartProvider>
       </body>
     </html>
   )

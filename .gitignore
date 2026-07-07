@@ -97,3 +97,7 @@ odoo/config/odoo.conf
 
 # source material (company profile PDF, logo source files) — not needed in repo
 data/
+
+# claude working folders
+_claude_tmp/
+_to_delete/

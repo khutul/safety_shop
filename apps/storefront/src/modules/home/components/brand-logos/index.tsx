@@ -1,21 +1,25 @@
-const API = process.env.NEXT_PUBLIC_ODOO_API_URL || "http://localhost:8079/api/v1"
-const BASE = process.env.NEXT_PUBLIC_ODOO_BASE_URL || "http://localhost:8079"
+import LocalizedClientLink from "@modules/common/components/localized-client-link"
+
+const API = typeof window === "undefined" ? (process.env.ODOO_INTERNAL_URL || "http://localhost:8079") + "/api/v1" : "/api/v1"
+const BASE = ""
 
 type Brand = { id: number; name: string; slug: string; website?: string; logo_url?: string | null }
 
 // Fallback (used only if the API returns nothing)
 const FALLBACK: Brand[] = [
-  { id: -1, name: "safetoe", slug: "safetoe" },
+  { id: -1, name: "SAFETOE", slug: "safetoe" },
   { id: -2, name: "SAFEYEAR", slug: "safeyear" },
   { id: -3, name: "3M", slug: "3m" },
   { id: -4, name: "HONEYWELL", slug: "honeywell" },
-  { id: -5, name: "KAMELO", slug: "kamelo" },
-  { id: -6, name: "ENERGIZER", slug: "energizer" },
+  { id: -5, name: "MSA", slug: "msa" },
+  { id: -6, name: "DELTAPLUS", slug: "deltaplus" },
+  { id: -7, name: "UVEX", slug: "uvex" },
+  { id: -8, name: "GUARDWON", slug: "guardwon" },
 ]
 
 async function getBrands(): Promise<Brand[]> {
   try {
-    const res = await fetch(`${API}/brands`, { cache: "no-store" })
+    const res = await fetch(`${API}/brands`, { next: { revalidate: 60 } })
     if (!res.ok) return FALLBACK
     const data = await res.json()
     return Array.isArray(data) && data.length ? data : FALLBACK
@@ -24,35 +28,94 @@ async function getBrands(): Promise<Brand[]> {
   }
 }
 
-function BrandItem({ b, last }: { b: Brand; last: boolean }) {
-  const inner = b.logo_url ? (
+/**
+ * Official brand wordmarks bundled with the storefront (public/brands/*.svg).
+ * A logo uploaded in Odoo (brand.logo) always wins; these are the fallback so
+ * the row looks right before logos are uploaded.
+ */
+const LOCAL_LOGOS: Record<string, string> = {
+  safetoe: "/brands/safetoe.svg",
+  safeyear: "/brands/safeyear.svg",
+  "3m": "/brands/3m.svg",
+  honeywell: "/brands/honeywell.svg",
+  msa: "/brands/msa.svg",
+  deltaplus: "/brands/deltaplus.svg",
+  delta: "/brands/deltaplus.svg",
+  uvex: "/brands/uvex.svg",
+  safetyjogger: "/brands/safetyjogger.svg",
+  guardwon: "/brands/guardwon.svg",
+  manada: "/brands/manada.svg",
+  manadasafety: "/brands/manada.svg",
+}
+
+function localLogo(b: Brand): string | null {
+  const key = (b.slug || b.name || "").toLowerCase().replace(/[^a-z0-9]/g, "")
+  return LOCAL_LOGOS[key] || null
+}
+
+function BrandCard({ b, hidden }: { b: Brand; hidden?: boolean }) {
+  const logoSrc = b.logo_url ? BASE + b.logo_url : localLogo(b)
+  const inner = logoSrc ? (
     // eslint-disable-next-line @next/next/no-img-element
-    <img src={BASE + b.logo_url} alt={b.name} style={{ height: 26, width: "auto", objectFit: "contain", display: "block", filter: "grayscale(0.15)" }} />
+    <img src={logoSrc} alt={hidden ? "" : b.name} style={{ height: 46, maxWidth: 170, width: "auto", objectFit: "contain", display: "block" }} />
   ) : (
-    <span style={{ fontSize: 13, fontWeight: 700, color: "rgba(255,255,255,0.65)", letterSpacing: "0.02em", whiteSpace: "nowrap" }}>{b.name}</span>
+    <span style={{ fontSize: 16, fontWeight: 800, color: "#3a3f47", letterSpacing: "0.04em", whiteSpace: "nowrap", fontFamily: "var(--ms-font-display)" }}>{b.name}</span>
   )
-  const style: React.CSSProperties = { padding: "4px 20px", borderRight: last ? "none" : "1px solid #2A2A2A", flexShrink: 0, display: "flex", alignItems: "center", textDecoration: "none" }
-  return b.website ? (
-    <a href={b.website} target="_blank" rel="noreferrer" style={style} title={b.name}>{inner}</a>
-  ) : (
-    <div style={style}>{inner}</div>
+  const style: React.CSSProperties = {
+    flex: "0 0 auto",
+    minWidth: 150,
+    height: 82,
+    background: "#fff",
+    border: "1px solid var(--ms-border)",
+    borderRadius: 4,
+    padding: "12px 22px",
+    marginRight: 14,
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    textDecoration: "none",
+  }
+  // Real brands (id > 0) link to their product list in the store;
+  // fallback placeholder brands just open the store.
+  const href = b.id > 0 ? `/store?brand_id=${b.id}` : "/store"
+  return (
+    <LocalizedClientLink href={href} style={style} title={b.name} aria-hidden={hidden} tabIndex={hidden ? -1 : undefined}>
+      {inner}
+    </LocalizedClientLink>
   )
 }
 
 export default async function BrandLogos() {
   const brands = await getBrands()
+  // Continuous right-to-left marquee once there are enough logos;
+  // a plain scrollable row when there are only a few.
+  const marquee = brands.length >= 6
   return (
-    <div style={{ background: "#0D0D0D", borderTop: "1px solid #1A1A1A", padding: "16px 0" }}>
-      <div style={{ maxWidth: 1340, margin: "0 auto", padding: "0 16px" }}>
-        <div style={{ display: "flex", alignItems: "center", overflowX: "auto" }}>
-          <span style={{ color: "rgba(255,255,255,0.32)", fontSize: 10, fontWeight: 700, letterSpacing: "0.18em", textTransform: "uppercase", whiteSpace: "nowrap", flexShrink: 0, paddingRight: 16, borderRight: "1px solid #2A2A2A" }}>
-            Албан ёсны дилер
-          </span>
-          {brands.map((b, i) => (
-            <BrandItem key={b.id} b={b} last={i === brands.length - 1} />
-          ))}
+    <section style={{ background: "var(--ms-bg)", padding: "40px 0", borderTop: "1px solid var(--ms-border-soft)" }}>
+      <div className="ms-container">
+        <div className="ms-sechead on-dark" style={{ marginBottom: 22 }}>
+          <div className="bar" />
+          <span className="title">Бидний нийлүүлдэг брэндүүд</span>
+          <div className="rule" />
+          <LocalizedClientLink href="/store" className="more">Бүгд →</LocalizedClientLink>
         </div>
+        {marquee ? (
+          <div className="ms-marquee">
+            <div
+              className="ms-marquee-track"
+              style={{ ["--ms-marquee-duration" as any]: `${Math.max(brands.length * 4, 24)}s` }}
+            >
+              {brands.map((b) => <BrandCard key={b.id} b={b} />)}
+              {/* Duplicate set makes the loop seamless */}
+              {brands.map((b) => <BrandCard key={`dup-${b.id}`} b={b} hidden />)}
+            </div>
+          </div>
+        ) : (
+          <div className="no-scrollbar" style={{ display: "flex", alignItems: "center", overflowX: "auto" }}>
+            {brands.map((b) => <BrandCard key={b.id} b={b} />)}
+          </div>
+        )}
       </div>
-    </div>
+    </section>
   )
 }

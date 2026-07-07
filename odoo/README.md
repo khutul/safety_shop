@@ -62,7 +62,7 @@ Option A — via the web UI (recommended):
 
 1. Open <http://localhost:8079>
 2. Database name: `safety_shop`
-3. Master password: `safety_shop_master_2026`  (from `config/odoo.conf`)
+3. Master password: see `admin_passwd` in your local `config/odoo.conf` (copied from `config/odoo.conf.example`; never commit the real value)
 4. Set an admin email/password, choose language/country, **leave "demo data" unchecked**.
 
 Option B — from the command line (creates the DB and installs the backend apps in one go):

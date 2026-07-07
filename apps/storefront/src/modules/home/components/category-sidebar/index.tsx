@@ -1,9 +1,10 @@
 "use client"
 import { useEffect, useState } from "react"
 import LocalizedClientLink from "@modules/common/components/localized-client-link"
+import { orderCategoryTree } from "@lib/util/category-order"
 
-const API = process.env.NEXT_PUBLIC_ODOO_API_URL || "http://localhost:8079/api/v1"
-const BASE = process.env.NEXT_PUBLIC_ODOO_BASE_URL || "http://localhost:8079"
+const API = typeof window === "undefined" ? (process.env.ODOO_INTERNAL_URL || "http://localhost:8079") + "/api/v1" : "/api/v1"
+const BASE = ""
 
 type Cat = {
   id: number
@@ -104,7 +105,7 @@ const FALLBACK_CATS: Cat[] = [
 function CategoryRow({ cat, index, active, onEnter }: { cat: Cat; index: number; active: boolean; onEnter: () => void }) {
   return (
     <LocalizedClientLink
-      href={`/store?category=${cat.slug}`}
+      href={cat.slug ? `/store?category=${cat.slug}` : `/store?category_id=${cat.id}`}
       onMouseEnter={onEnter}
       style={{
         display: "flex",
@@ -163,7 +164,7 @@ function SubcategoryPanel({ cat }: { cat: Cat }) {
         {kids.slice(0, 5).map((sub) => (
           <LocalizedClientLink
             key={sub.id}
-            href={`/store?category=${sub.slug}`}
+            href={sub.slug ? `/store?category=${sub.slug}` : `/store?category_id=${sub.id}`}
             style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "9px 0", borderBottom: "1px solid #262626", fontSize: 12.5, color: "rgba(255,255,255,0.68)", textDecoration: "none" }}
           >
             <span>{sub.name}</span>
@@ -172,7 +173,7 @@ function SubcategoryPanel({ cat }: { cat: Cat }) {
         ))}
       </div>
       <LocalizedClientLink
-        href={`/store?category=${cat.slug}`}
+        href={cat.slug ? `/store?category=${cat.slug}` : `/store?category_id=${cat.id}`}
         style={{ display: "inline-block", marginTop: 12, fontSize: 11, fontWeight: 800, color: "#FFCC00", textDecoration: "none", textTransform: "uppercase", letterSpacing: "0.06em" }}
       >
         Бүгдийг үзэх →
@@ -189,10 +190,10 @@ export default function CategorySidebar() {
     let alive = true
     ;(async () => {
       try {
-        const res = await fetch(`${API}/categories?lang=mn`, { cache: "no-store" })
+        const res = await fetch(`${API}/categories?lang=mn`)
         if (!res.ok) return
         const data = await res.json()
-        if (alive && Array.isArray(data) && data.length) setCats(data)
+        if (alive && Array.isArray(data) && data.length) setCats(orderCategoryTree(data))
       } catch {
         /* keep fallback */
       }

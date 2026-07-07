@@ -2,8 +2,8 @@ import { Metadata } from "next"
 import { notFound } from "next/navigation"
 import ManadaProductDetail from "@modules/products/templates/manada-detail"
 
-const API = process.env.NEXT_PUBLIC_ODOO_API_URL || "http://localhost:8079/api/v1"
-const BASE = process.env.NEXT_PUBLIC_ODOO_BASE_URL || "http://localhost:8079"
+const API = typeof window === "undefined" ? (process.env.ODOO_INTERNAL_URL || "http://localhost:8079") + "/api/v1" : "/api/v1"
+const BASE = ""
 
 type Props = {
   params: Promise<{ countryCode: string; handle: string }>
@@ -11,7 +11,7 @@ type Props = {
 
 async function getProduct(slug: string) {
   try {
-    const res = await fetch(`${API}/products/${encodeURIComponent(slug)}?lang=mn`, { cache: "no-store" })
+    const res = await fetch(`${API}/products/${encodeURIComponent(slug)}?lang=mn`, { next: { revalidate: 60 } })
     if (!res.ok) return null
     return await res.json()
   } catch {
@@ -21,7 +21,7 @@ async function getProduct(slug: string) {
 
 async function getPhone(): Promise<string> {
   try {
-    const res = await fetch(`${API}/site/settings?lang=mn`, { cache: "no-store" })
+    const res = await fetch(`${API}/site/settings?lang=mn`, { next: { revalidate: 300 } })
     if (!res.ok) return "+97699102250"
     const s = await res.json()
     return (s.phone || "+97699102250").replace(/\s/g, "")
