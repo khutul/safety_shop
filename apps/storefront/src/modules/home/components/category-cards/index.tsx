@@ -46,14 +46,16 @@ export default async function CategoryCards() {
           {cats.map((c) => (
             <LocalizedClientLink key={c.id} href={c.slug ? `/store?category=${c.slug}` : `/store?category_id=${c.id}`} style={{ textDecoration: "none" }}>
               <div className="ms-cattile">
-                <div style={{ height: 132, background: "#f4f5f7", display: "flex", alignItems: "center", justifyContent: "center", overflow: "hidden", padding: 10 }}>
+                <div style={{ height: 168, background: "#f4f5f7", overflow: "hidden", position: "relative" }}>
                   {c.image_url ? (
                     // eslint-disable-next-line @next/next/no-img-element
-                    <img src={BASE + c.image_url} alt={c.name} style={{ maxHeight: "100%", maxWidth: "100%", objectFit: "contain" }} />
+                    <img src={BASE + c.image_url} alt={c.name} style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }} />
                   ) : (
-                    <svg width="42" height="42" viewBox="0 0 24 24" fill="none" stroke="#9aa0aa" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round">
-                      {(ICON[c.slug] || ICON["general-protection"]).split(" M").map((s, i) => <path key={i} d={i === 0 ? s : "M" + s} />)}
-                    </svg>
+                    <div style={{ width: "100%", height: "100%", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                      <svg width="42" height="42" viewBox="0 0 24 24" fill="none" stroke="#9aa0aa" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round">
+                        {(ICON[c.slug] || ICON["general-protection"]).split(" M").map((s, i) => <path key={i} d={i === 0 ? s : "M" + s} />)}
+                      </svg>
+                    </div>
                   )}
                 </div>
                 <div style={{ padding: "13px 10px" }}>
