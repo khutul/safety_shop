@@ -1,11 +1,14 @@
 # -*- coding: utf-8 -*-
 import base64
+import logging
 import time
 from collections import defaultdict, deque
 
 from odoo import http
 from odoo.http import request
 from odoo.tools.mimetypes import guess_mimetype
+
+_logger = logging.getLogger(__name__)
 
 LANG_MAP = {"mn": "mn_MN", "en": "en_US"}
 
@@ -74,13 +77,24 @@ class SafetyCatalogAPI(http.Controller):
             key = g.get("storefront_categ_ids")
             if key:
                 counts[key[0]] = g.get("storefront_categ_ids_count", g.get("__count", 0))
+        # Subtree counts: a parent shows its own products PLUS everything in
+        # its child categories (e.g. "Хамгаалах хэрэгсэл" sums all its subs).
+        subtree = dict(counts)
+        for c in cats:
+            n = counts.get(c.id, 0)
+            if not n:
+                continue
+            p = c.parent_id
+            while p:
+                subtree[p.id] = subtree.get(p.id, 0) + n
+                p = p.parent_id
         by_id = {}
         for c in cats:
             by_id[c.id] = {
                 "id": c.id, "name": c.name, "slug": c.slug or "",
                 "parent_id": c.parent_id.id or None, "sequence": c.sequence,
                 "image_url": ("/api/v1/categories/%s/image?v=%s" % (c.id, _img_ver(c))) if c.image else None,
-                "count": counts.get(c.id, 0),
+                "count": subtree.get(c.id, 0),
                 "children": [],
             }
         roots = []
@@ -107,6 +121,7 @@ class SafetyCatalogAPI(http.Controller):
             "id": b.id, "name": b.name, "slug": b.slug or "",
             "website": b.website or "",
             "logo_url": ("/api/v1/brands/%s/logo?v=%s" % (b.id, _img_ver(b))) if b.logo else None,
+            "cover_url": ("/api/v1/brands/%s/cover?v=%s" % (b.id, _img_ver(b))) if b.cover else None,
         } for b in brands]
         return self._cached_json(data, max_age=300)
 
@@ -115,6 +130,12 @@ class SafetyCatalogAPI(http.Controller):
     def brand_logo(self, brand_id, **kw):
         rec = request.env["safety.catalog.brand"].sudo().browse(brand_id)
         return self._image_response(rec, "logo")
+
+    @http.route("/api/v1/brands/<int:brand_id>/cover", type="http",
+                auth="public", csrf=False, cors="*")
+    def brand_cover(self, brand_id, **kw):
+        rec = request.env["safety.catalog.brand"].sudo().browse(brand_id)
+        return self._image_response(rec, "cover")
 
     # ---------------- Industries (Салбар) ----------------
     @http.route("/api/v1/industries", type="http", auth="public",
@@ -392,6 +413,75 @@ class SafetyCatalogAPI(http.Controller):
             "in_stock": qty > 0,
         }
 
+    # ---------------- Partnership requests ----------------
+    @http.route("/api/v1/partnership", type="http", auth="public",
+                methods=["POST", "OPTIONS"], csrf=False, cors="*")
+    def create_partnership_request(self, **kw):
+        import json
+        if request.httprequest.method == "OPTIONS":
+            return request.make_json_response({})
+        ip = request.httprequest.remote_addr or "?"
+        if _rate_limited(ip):
+            return request.make_json_response(
+                {"error": {"code": "rate_limited",
+                           "message": "Хэт олон хүсэлт илгээгдлээ. Түр хүлээгээд дахин оролдоно уу."}},
+                status=429)
+        try:
+            data = json.loads(request.httprequest.data or b"{}")
+        except (ValueError, TypeError):
+            return request.make_json_response(
+                {"error": {"code": "bad_json", "message": "Буруу өгөгдөл илгээгдлээ."}},
+                status=400)
+        name = (data.get("name") or "").strip()
+        phone = (data.get("phone") or "").strip()
+        if not name or not phone:
+            return request.make_json_response(
+                {"error": {"code": "missing_fields",
+                           "message": "Нэр болон утасны дугаараа оруулна уу."}},
+                status=400)
+        try:
+            rec = request.env["safety.partner.request"].sudo().create({
+                "name": name[:120],
+                "company": (data.get("company") or "").strip()[:200],
+                "phone": phone[:40],
+                "email": (data.get("email") or "").strip()[:120],
+                "message": (data.get("message") or "").strip()[:4000],
+            })
+            # Best-effort email notification. Needs an Outgoing Mail Server
+            # (Settings -> Technical -> Email -> Outgoing Mail Servers);
+            # until one is configured this silently does nothing.
+            try:
+                settings = request.env["safety.site.settings"].sudo().search([], limit=1)
+                to_addr = (settings.email or "").strip() if settings else ""
+                if to_addr:
+                    from markupsafe import escape
+                    body = (
+                        "<h3>Шинэ хамтран ажиллах хүсэлт</h3>"
+                        "<p><b>Нэр:</b> %s<br/>"
+                        "<b>Байгууллага:</b> %s<br/>"
+                        "<b>Утас:</b> %s<br/>"
+                        "<b>И-мэйл:</b> %s</p>"
+                        "<p><b>Захиа:</b><br/>%s</p>"
+                        "<p>Odoo: Safety Catalog → Хамтран ажиллах хүсэлт</p>"
+                    ) % (escape(rec.name), escape(rec.company or "-"),
+                         escape(rec.phone), escape(rec.email or "-"),
+                         escape(rec.message or "-"))
+                    request.env["mail.mail"].sudo().create({
+                        "subject": "Хамтран ажиллах хүсэлт: %s" % rec.name,
+                        "email_to": to_addr,
+                        "body_html": body,
+                        "auto_delete": True,
+                    }).send(raise_exception=False)
+            except Exception:
+                pass
+            return request.make_json_response({"ok": True, "id": rec.id})
+        except Exception:  # noqa: BLE001
+            _logger.exception("Partnership request failed")
+            return request.make_json_response(
+                {"error": {"code": "server_error",
+                           "message": "Хүсэлт илгээхэд алдаа гарлаа. Дахин оролдоно уу."}},
+                status=500)
+
     # ---------------- Orders ----------------
     @http.route("/api/v1/orders", type="http", auth="public",
                 methods=["POST", "OPTIONS"], csrf=False, cors="*")
@@ -431,12 +521,15 @@ class SafetyCatalogAPI(http.Controller):
                     "street": (cust.get("address") or "").strip() or False,
                     "company_type": "person",
                 })
-        except Exception as e:  # noqa: BLE001
+        except Exception:  # noqa: BLE001
+            _logger.exception("Storefront order: partner create/search failed (phone=%s)", phone)
             return request.make_json_response(
-                {"error": {"code": "partner_failed", "message": str(e)[:500]}},
+                {"error": {"code": "partner_failed",
+                           "message": "Захиалга үүсгэхэд алдаа гарлаа. Дахин оролдоно уу."}},
                 status=500)
 
         Product = env["product.template"].sudo()
+        pricelist = self._sale_pricelist()
         lines = []
         shortages = []
         for it in items:
@@ -465,9 +558,21 @@ class SafetyCatalogAPI(http.Controller):
                     "requested": qty,
                     "available": max(int(available), 0),
                 })
+            # Explicit unit price (same as the storefront shows). Odoo's
+            # auto-compute can leave API-created lines at 0, which breaks
+            # order totals and QPay invoicing — so we set it directly.
+            unit_price = product.lst_price or 0.0
+            if pricelist:
+                try:
+                    pp = pricelist._get_product_price(product, float(qty))
+                    if pp:
+                        unit_price = pp
+                except Exception:  # noqa: BLE001
+                    pass
             lines.append((0, 0, {
                 "product_id": product.id,
                 "product_uom_qty": qty,
+                "price_unit": unit_price,
             }))
 
         if not lines:
@@ -490,14 +595,21 @@ class SafetyCatalogAPI(http.Controller):
         }
         # Web orders use the storefront pricelist so the totals match
         # the discounted prices shown on the site.
-        pricelist = self._sale_pricelist()
         if pricelist:
             order_vals["pricelist_id"] = pricelist.id
         try:
             order = env["sale.order"].sudo().create(order_vals)
-        except Exception as e:  # noqa: BLE001 — surface the reason to the API client
+            # Safety net: if any line price came back 0 (Odoo recompute), force
+            # the explicit price we calculated so the total is never 0.
+            for line, src in zip(order.order_line, lines):
+                want = src[2].get("price_unit") or 0.0
+                if want and not line.price_unit:
+                    line.price_unit = want
+        except Exception:  # noqa: BLE001
+            _logger.exception("Storefront order: sale.order create failed (partner=%s)", partner.id)
             return request.make_json_response(
-                {"error": {"code": "order_failed", "message": str(e)[:500]}},
+                {"error": {"code": "order_failed",
+                           "message": "Захиалга үүсгэхэд алдаа гарлаа. Дахин оролдоно уу."}},
                 status=500)
         if shortages:
             order.message_post(body=(

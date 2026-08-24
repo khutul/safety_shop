@@ -11,8 +11,6 @@
     "start": "turbo start",
     "lint": "turbo lint",
     "test": "turbo test",
-    "backend:seed": "turbo seed --filter=@dtc/backend",
-    "backend:dev": "turbo dev --filter=@dtc/backend",
     "storefront:dev": "turbo dev --filter=@dtc/storefront"
   },
   "pnpm": {
@@ -26,8 +24,7 @@
     "prettier": "^3.2.5"
   },
   "workspaces": [
-    "apps/**",
-    "!apps/backend/.medusa/**"
+    "apps/storefront"
   ],
   "overrides": {
     "ajv": "^8.0.0"
