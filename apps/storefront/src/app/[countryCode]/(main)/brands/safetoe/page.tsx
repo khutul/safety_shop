@@ -1,8 +1,23 @@
 import { Metadata } from "next"
 import LocalizedClientLink from "@modules/common/components/localized-client-link"
 
+const API = typeof window === "undefined" ? (process.env.ODOO_INTERNAL_URL || "http://localhost:8079") + "/api/v1" : "/api/v1"
+
+/** Hero background: the Safetoe brand's Cover Image from Odoo, else the bundled file. */
+async function getHeroImage(): Promise<string> {
+  try {
+    const res = await fetch(`${API}/brands`, { cache: "no-store" })
+    if (res.ok) {
+      const brands: { id: number; name: string; cover_url?: string | null }[] = await res.json()
+      const b = brands.find((x) => (x.name || "").toLowerCase() === "safetoe")
+      if (b?.cover_url) return b.cover_url
+    }
+  } catch {}
+  return "/safetoe/hero.png"
+}
+
 export const metadata: Metadata = {
-  title: "Safetoe — Албан ёсны дистрибютор | Manada Safety",
+  title: "Safetoe — Албан ёсны дистрибютор",
   description:
     "Manada Safety нь дэлхийн тэргүүлэх PPE брэнд Safetoe-гийн Монгол дахь албан ёсны дистрибютор. Steel Toe, Composite Toe, EH, S7 Waterproof технологитой хөдөлмөр хамгааллын гутал.",
 }
@@ -54,12 +69,29 @@ const FACTS = [
 
 
 export default async function SafetoePage() {
+  const heroImg = await getHeroImage()
   return (
     <div style={{ background: "var(--ms-bg)" }}>
-      {/* ── Hero ── */}
-      <div style={{ background: "#0D0D0D", borderBottom: "1px solid var(--ms-border-soft)" }}>
-        <div className="ms-container" style={{ padding: "48px 20px", display: "flex", alignItems: "center", gap: 40, flexWrap: "wrap" }}>
-          <div style={{ flex: "1 1 380px", minWidth: 0 }}>
+      {/* ── Hero (safetoe.net style — full-width photo background) ── */}
+      <div style={{ position: "relative", background: "#0D0D0D", borderBottom: "1px solid var(--ms-border-soft)", overflow: "hidden" }}>
+        <div
+          style={{
+            position: "absolute",
+            inset: 0,
+            backgroundImage: `url(${heroImg})`,
+            backgroundSize: "cover",
+            backgroundPosition: "center right",
+          }}
+        />
+        <div
+          style={{
+            position: "absolute",
+            inset: 0,
+            background: "linear-gradient(90deg, rgba(8,8,8,0.93) 0%, rgba(8,8,8,0.78) 42%, rgba(8,8,8,0.3) 75%, rgba(8,8,8,0.15) 100%)",
+          }}
+        />
+        <div className="ms-container" style={{ position: "relative", padding: "72px 20px", minHeight: 440, display: "flex", alignItems: "center" }}>
+          <div style={{ flex: "1 1 380px", minWidth: 0, maxWidth: 640 }}>
             <div style={{ display: "inline-flex", alignItems: "center", gap: 10, marginBottom: 18, background: "rgba(255,204,0,0.1)", border: "1px solid rgba(255,204,0,0.35)", padding: "6px 14px", borderRadius: 2 }}>
               <div style={{ width: 20, height: 2, background: "#FFCC00" }} />
               <span style={{ color: "#FFCC00", fontSize: 11, fontWeight: 700, letterSpacing: "0.18em", textTransform: "uppercase" }}>
@@ -79,15 +111,11 @@ export default async function SafetoePage() {
               дистрибюторын эрхийг авсан — та манайхаас зөвхөн жинхэнэ, баталгаат бүтээгдэхүүн авна.
             </p>
             <div style={{ display: "flex", gap: 12, flexWrap: "wrap" }}>
-              <LocalizedClientLink href="/store?brand=safetoe" className="ms-btn-gold">
+              <LocalizedClientLink href="/store?brand_id=1" className="ms-btn-gold">
                 Safetoe бүтээгдэхүүн үзэх <span aria-hidden>→</span>
               </LocalizedClientLink>
               <a href="#technology" className="ms-btn-ghost">Технологиуд үзэх</a>
             </div>
-          </div>
-          <div style={{ flex: "0 0 auto", display: "flex", justifyContent: "center" }}>
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src="/safetoe/logo.jpg" alt="Safetoe — Top Quality Since 1984" style={{ width: 210, height: 210, objectFit: "contain", borderRadius: "50%", boxShadow: "0 12px 44px rgba(255,204,0,0.18)" }} />
           </div>
         </div>
       </div>
@@ -199,7 +227,7 @@ export default async function SafetoePage() {
           </p>
           <div style={{ background: "#fff", border: "1px solid var(--ms-border)", borderRadius: 8, padding: "22px 26px" }}>
             {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src="/safetoe/cert/badges.webp" alt="CE · ASTM International · CSA · Certified System · ISO" style={{ width: "100%", height: "auto", display: "block" }} />
+            <img src="/safetoe/tech/astm.webp.webp" alt="CE · ASTM International · CSA · Certified System · ISO" style={{ width: "100%", height: "auto", display: "block" }} />
           </div>
         </div>
       </section>
@@ -212,20 +240,56 @@ export default async function SafetoePage() {
             <span className="title">Үйлдвэр ба чанарын хяналт</span>
             <div className="rule" />
           </div>
-          <div style={{ maxWidth: 420, margin: "0 auto" }}>
-            <div style={{ position: "relative", paddingTop: "177%", borderRadius: 8, overflow: "hidden", border: "1px solid var(--ms-border)", background: "#000" }}>
-              <iframe
-                src={`https://www.facebook.com/plugins/video.php?href=${encodeURIComponent(REEL_URL)}&show_text=false`}
-                style={{ position: "absolute", inset: 0, width: "100%", height: "100%", border: 0 }}
-                allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share"
-                allowFullScreen
-                title="Safetoe үйлдвэрийн видео"
+          {/* Two videos side by side: a locally-hosted factory video and the
+              Facebook reel (FB blocks embedding, so it links out). */}
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))", gap: 22, maxWidth: 1000, margin: "0 auto" }}>
+            <div>
+              <video
+                controls
+                preload="metadata"
+                src="/safetoe/factory.mp4"
+                style={{ width: "100%", aspectRatio: "16/9", borderRadius: 8, border: "1px solid var(--ms-border)", background: "#000", display: "block", objectFit: "cover" }}
               />
+              <div style={{ textAlign: "center", marginTop: 10, color: "rgba(255,255,255,0.55)", fontSize: 12.5 }}>
+                Эцсийн боловсруулалт, савлагаа — Safetoe үйлдвэр
+              </div>
             </div>
-            <div style={{ textAlign: "center", marginTop: 12 }}>
-              <a href={REEL_URL} target="_blank" rel="noreferrer" style={{ color: "#FFCC00", fontSize: 13, textDecoration: "none", fontWeight: 600 }}>
-                Facebook дээр үзэх →
+            <div>
+              <a
+                href={REEL_URL}
+                target="_blank"
+                rel="noreferrer"
+                style={{ position: "relative", display: "block", aspectRatio: "16/9", borderRadius: 8, overflow: "hidden", border: "1px solid var(--ms-border)", textDecoration: "none", background: "#0D0D0D" }}
+              >
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src="/safetoe/video-poster.webp"
+                  alt=""
+                  style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", filter: "brightness(0.45)" }}
+                />
+                <span
+                  style={{
+                    position: "absolute",
+                    inset: 0,
+                    display: "flex",
+                    flexDirection: "column",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    gap: 12,
+                  }}
+                >
+                  <span style={{ width: 60, height: 60, borderRadius: "50%", background: "#FFCC00", display: "flex", alignItems: "center", justifyContent: "center", boxShadow: "0 8px 30px rgba(0,0,0,0.5)" }}>
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="#151515"><path d="M8 5v14l11-7z" /></svg>
+                  </span>
+                  <span style={{ color: "#fff", fontSize: 14, fontWeight: 800, letterSpacing: "0.04em", textTransform: "uppercase", fontFamily: "var(--ms-font-display)" }}>
+                    Үйлдвэрийн видео үзэх
+                  </span>
+                  <span style={{ color: "rgba(255,255,255,0.7)", fontSize: 12 }}>Facebook дээр нээгдэнэ →</span>
+                </span>
               </a>
+              <div style={{ textAlign: "center", marginTop: 10, color: "rgba(255,255,255,0.55)", fontSize: 12.5 }}>
+                Чанарын хяналт — Facebook видео
+              </div>
             </div>
           </div>
         </div>
@@ -239,7 +303,7 @@ export default async function SafetoePage() {
         <p style={{ color: "rgba(255,255,255,0.6)", fontSize: 14, maxWidth: 520, margin: "0 auto 26px", lineHeight: 1.7 }}>
           Уул уурхай, барилга, үйлдвэрийн хамгаалалтын гутлын бүрэн нэр төрөл — албан ёсны баталгаатай.
         </p>
-        <LocalizedClientLink href="/store?brand=safetoe" className="ms-btn-gold">
+        <LocalizedClientLink href="/store?brand_id=1" className="ms-btn-gold">
           Бүтээгдэхүүн үзэх <span aria-hidden>→</span>
         </LocalizedClientLink>
       </section>

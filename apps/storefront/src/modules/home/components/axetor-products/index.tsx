@@ -152,7 +152,7 @@ function ProductCard({ product }: { product: HttpTypes.StoreProduct }) {
               </span>
               {inStock
                 ? (totalInventory > 0 && totalInventory < 1000 ? `Нөөцтэй: ${totalInventory}` : "Нөөцтэй")
-                : "Захиалгаар"}
+                : "Үйлдвэрлэгдэж байгаа"}
             </div>
           </div>
 

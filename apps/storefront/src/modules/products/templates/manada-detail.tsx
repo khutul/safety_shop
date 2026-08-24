@@ -65,7 +65,7 @@ function normColor(c: string) {
 const STOCK: Record<string, { label: string; bg: string; fg: string }> = {
   in: { label: "Нөөцтэй", bg: "rgba(127,199,94,0.14)", fg: "#7fc75e" },
   low: { label: "Бага үлдэгдэлтэй", bg: "rgba(255,204,0,0.12)", fg: "#FFCC00" },
-  out: { label: "Захиалгаар", bg: "rgba(255,255,255,0.08)", fg: "rgba(255,255,255,0.6)" },
+  out: { label: "Үйлдвэрлэгдэж байгаа", bg: "rgba(255,255,255,0.08)", fg: "rgba(255,255,255,0.6)" },
 }
 
 export default function ManadaProductDetail({ product, base, phone }: { product: Product; base: string; phone: string }) {

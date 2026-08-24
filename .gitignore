@@ -101,3 +101,8 @@ data/
 # claude working folders
 _claude_tmp/
 _to_delete/
+
+# Odoo backups / dumps (never commit)
+odoo/filestore.tgz
+odoo/filestore_safety_shop/
+odoo/*.dump

@@ -37,6 +37,9 @@
                             <field name="active"/>
                         </group>
                     </group>
+                    <group string="Storefront">
+                        <field name="cover" widget="image"/>
+                    </group>
                 </sheet>
             </form>
         </field>

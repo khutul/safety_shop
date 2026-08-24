@@ -324,12 +324,54 @@ html, body {
 @media (max-width: 900px) {
   .ms-show-mobile { display: flex !important; }
 }
-/* Nav menu row scrolls horizontally on mobile */
+/* Nav menu row — must stay overflow-visible so dropdowns
+   (brands, translate) can extend below it. */
 .ms-navrow {
-  overflow-x: auto;
-  scrollbar-width: none;
+  overflow: visible;
 }
-.ms-navrow::-webkit-scrollbar { display: none; }
+
+/* Simple text link inside the brands dropdown */
+.ms-brandlink {
+  display: block;
+  padding: 9px 18px;
+  font-size: 13px;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.72);
+  text-decoration: none;
+  white-space: nowrap;
+  transition: color 0.15s, background 0.15s;
+}
+.ms-brandlink:hover {
+  color: var(--ms-gold);
+  background: rgba(255, 204, 0, 0.06);
+}
+
+/* Hover highlight for the light mega menu (БҮТЭЭГДЭХҮҮН dropdown) */
+.ms-megahead {
+  transition: color 0.12s;
+}
+.ms-megahead:hover {
+  color: #c99700 !important;
+}
+.ms-megalink {
+  transition: background 0.12s, color 0.12s;
+}
+.ms-megalink:hover {
+  background: #fff3c4;
+  color: #17181a !important;
+}
+.ms-megalink:hover span:last-child {
+  color: #c99700 !important;
+}
+
+/* Hover highlight for dark sidebar / accordion menu links */
+.ms-sidelink {
+  transition: background 0.12s, color 0.12s;
+}
+.ms-sidelink:hover {
+  background: rgba(255, 204, 0, 0.1);
+  color: var(--ms-gold) !important;
+}
 
 /* Mega menu / sidebar dropdown columns */
 .ms-megagrid {
@@ -365,6 +407,24 @@ html, body {
 }
 @media (min-width: 900px) {
   .ms-grid-3 { grid-template-columns: repeat(3, 1fr); }
+}
+
+/* ============================================================
+   Google Website Translator — hide Google's own chrome
+   ============================================================ */
+.goog-te-banner-frame,
+iframe.skiptranslate,
+#goog-gt-tt,
+.goog-te-balloon-frame,
+.goog-te-gadget {
+  display: none !important;
+}
+body {
+  top: 0 !important;
+}
+.goog-text-highlight {
+  background: none !important;
+  box-shadow: none !important;
 }
 
 /* Footer columns */

@@ -15,38 +15,9 @@ function CartIconSVG() {
   )
 }
 
-const UTIL_LEFT = [
-  { icon: "✓", label: "100% жинхэнэ бараа" },
-  { icon: "🚚", label: "Үнэгүй хүргэлт (100,000₮-с дээш)" },
-  { icon: "⏱", label: "УБ хотод 24 цагийн дотор" },
-]
-
 export default async function Nav() {
   return (
     <div className="sticky top-0 inset-x-0 z-50">
-      {/* ── Utility bar ── */}
-      <div className="ms-hide-mobile" style={{ background: "#0C0C0C", borderBottom: "1px solid #1c1c1c" }}>
-        <div style={{ maxWidth: 1340, margin: "0 auto", padding: "0 16px", display: "flex", alignItems: "center", height: 32, gap: 22 }}>
-          {UTIL_LEFT.map((u) => (
-            <span key={u.label} style={{ display: "flex", alignItems: "center", gap: 6, fontSize: 11, color: "rgba(255,255,255,0.5)" }}>
-              <span style={{ color: "#FFCC00", fontSize: 11 }}>{u.icon}</span>
-              {u.label}
-            </span>
-          ))}
-          <div style={{ marginLeft: "auto", display: "flex", alignItems: "center", gap: 20 }}>
-            <LocalizedClientLink href="/order-status" style={{ fontSize: 11, color: "rgba(255,255,255,0.55)", textDecoration: "none" }}>
-              Захиалга шалгах
-            </LocalizedClientLink>
-            <LocalizedClientLink href="/about" style={{ fontSize: 11, color: "rgba(255,255,255,0.55)", textDecoration: "none" }}>
-              Бидэнтэй холбогдох
-            </LocalizedClientLink>
-            <a href="mailto:info@manadasafety.mn" style={{ fontSize: 11, color: "rgba(255,255,255,0.55)", textDecoration: "none" }}>
-              Хэрэглэгчийн дэмжлэг
-            </a>
-          </div>
-        </div>
-      </div>
-
       {/* ── Main row ── */}
       <header style={{ background: "#151515", borderBottom: "1px solid #2A2A2A", boxShadow: "0 2px 16px rgba(0,0,0,0.4)" }}>
         <div style={{ maxWidth: 1340, margin: "0 auto", padding: "0 16px", display: "flex", alignItems: "center", height: 64, gap: 16 }}>

@@ -59,7 +59,10 @@ export default async function CategoryCards() {
                 <div style={{ padding: "13px 10px" }}>
                   <span className="ttl">{c.name}</span>
                   {typeof c.count === "number" && c.count > 0 && (
-                    <div style={{ fontSize: 10, color: "rgba(255,255,255,0.38)", marginTop: 4, fontWeight: 600 }}>{c.count} бүтээгдэхүүн</div>
+                    <div style={{ fontSize: 10.5, marginTop: 5, fontWeight: 700 }}>
+                      <span style={{ color: "#FFCC00" }}>{c.count}</span>
+                      <span style={{ color: "rgba(255,255,255,0.45)" }}> бүтээгдэхүүн</span>
+                    </div>
                   )}
                 </div>
               </div>

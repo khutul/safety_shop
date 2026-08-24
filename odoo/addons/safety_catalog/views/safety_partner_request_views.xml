@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_safety_partner_request_list" model="ir.ui.view">
+        <field name="name">safety.partner.request.list</field>
+        <field name="model">safety.partner.request</field>
+        <field name="arch" type="xml">
+            <list string="Partnership Requests">
+                <field name="create_date" string="Огноо"/>
+                <field name="name"/>
+                <field name="company"/>
+                <field name="phone"/>
+                <field name="email"/>
+                <field name="state" widget="badge"
+                       decoration-info="state == 'new'"
+                       decoration-warning="state == 'in_progress'"
+                       decoration-success="state == 'done'"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_safety_partner_request_form" model="ir.ui.view">
+        <field name="name">safety.partner.request.form</field>
+        <field name="model">safety.partner.request</field>
+        <field name="arch" type="xml">
+            <form string="Partnership Request">
+                <header>
+                    <field name="state" widget="statusbar" options="{'clickable': '1'}"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <h1><field name="name"/></h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="company"/>
+                            <field name="phone"/>
+                            <field name="email"/>
+                        </group>
+                        <group>
+                            <field name="create_date" string="Ирсэн огноо"/>
+                        </group>
+                    </group>
+                    <group string="Захиа">
+                        <field name="message" nolabel="1"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_safety_partner_request" model="ir.actions.act_window">
+        <field name="name">Хамтран ажиллах хүсэлт</field>
+        <field name="res_model">safety.partner.request</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <menuitem id="menu_safety_partner_request" name="Хамтран ажиллах хүсэлт"
+              parent="menu_safety_catalog_root" action="action_safety_partner_request" sequence="60"/>
+
+</odoo>

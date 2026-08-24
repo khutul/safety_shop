@@ -21,19 +21,60 @@ function CategoryLink({ cat, active, child }: { cat: Cat; active: boolean; child
   return (
     <LocalizedClientLink
       href={cat.slug ? `/store?category=${cat.slug}` : `/store?category_id=${cat.id}`}
+      className="ms-sidelink"
       style={{
         display: "block",
-        padding: child ? "5px 8px 5px 22px" : "7px 8px",
+        flex: child ? undefined : 1,
+        minWidth: 0,
+        padding: child ? "6px 8px 6px 22px" : "9px 8px",
         borderRadius: 3,
-        fontSize: child ? 12.5 : 13,
-        fontWeight: active ? 700 : child ? 400 : 600,
-        color: active ? "#FFCC00" : child ? "rgba(255,255,255,0.55)" : "rgba(255,255,255,0.8)",
+        fontSize: child ? 12.5 : 12,
+        fontWeight: active ? 800 : child ? 400 : 700,
+        letterSpacing: child ? undefined : "0.05em",
+        textTransform: child ? undefined : ("uppercase" as const),
+        color: active ? "#FFCC00" : child ? "rgba(255,255,255,0.55)" : "rgba(255,255,255,0.85)",
         textDecoration: "none",
         background: active ? "rgba(255,204,0,0.08)" : "none",
       }}
     >
       {cat.name}
     </LocalizedClientLink>
+  )
+}
+
+/** Root category row with a fold-out list of children. */
+function CatGroup({ cat, isActive }: { cat: Cat; isActive: (c: Cat) => boolean }) {
+  const kids = cat.children || []
+  const containsActive = isActive(cat) || kids.some((k) => isActive(k))
+  const [expanded, setExpanded] = useState(containsActive)
+
+  // Keep the group open when the active category is inside it
+  useEffect(() => {
+    if (containsActive) setExpanded(true)
+  }, [containsActive])
+
+  return (
+    <div style={{ borderBottom: "1px solid #242424" }}>
+      <div style={{ display: "flex", alignItems: "center" }}>
+        <CategoryLink cat={cat} active={isActive(cat)} />
+        {kids.length > 0 && (
+          <button
+            onClick={() => setExpanded((v) => !v)}
+            aria-label="Дэд ангилал"
+            style={{ background: "none", border: "none", cursor: "pointer", padding: "9px 8px", color: "rgba(255,255,255,0.45)", flexShrink: 0 }}
+          >
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" style={{ transform: expanded ? "rotate(180deg)" : "none", transition: "transform 0.2s" }}><path d="M6 9l6 6 6-6" /></svg>
+          </button>
+        )}
+      </div>
+      {expanded && kids.length > 0 && (
+        <div style={{ paddingBottom: 6 }}>
+          {kids.map((ch) => (
+            <CategoryLink key={ch.id} cat={ch} active={isActive(ch)} child />
+          ))}
+        </div>
+      )}
+    </div>
   )
 }
 
@@ -124,26 +165,25 @@ const RefinementList = ({ sortBy, "data-testid": dataTestId }: RefinementListPro
         </div>
         <LocalizedClientLink
           href="/store"
+          className="ms-sidelink"
           style={{
             display: "block",
-            padding: "7px 8px",
+            padding: "9px 8px",
             borderRadius: 3,
-            fontSize: 13,
-            fontWeight: !activeSlug && !activeId ? 700 : 600,
-            color: !activeSlug && !activeId ? "#FFCC00" : "rgba(255,255,255,0.8)",
+            fontSize: 12,
+            fontWeight: !activeSlug && !activeId ? 800 : 700,
+            letterSpacing: "0.05em",
+            textTransform: "uppercase",
+            color: !activeSlug && !activeId ? "#FFCC00" : "rgba(255,255,255,0.85)",
             textDecoration: "none",
             background: !activeSlug && !activeId ? "rgba(255,204,0,0.08)" : "none",
+            borderBottom: "1px solid #242424",
           }}
         >
           Бүх бараа
         </LocalizedClientLink>
         {cats.map((c) => (
-          <div key={c.id}>
-            <CategoryLink cat={c} active={isActive(c)} />
-            {(c.children || []).map((ch) => (
-              <CategoryLink key={ch.id} cat={ch} active={isActive(ch)} child />
-            ))}
-          </div>
+          <CatGroup key={c.id} cat={c} isActive={isActive} />
         ))}
       </div>
       <div style={{ background: "#1A1A1A", border: "1px solid #262626", borderRadius: 4, padding: "16px 14px" }}>

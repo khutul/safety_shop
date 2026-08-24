@@ -6,7 +6,7 @@
  * (and re-parent) here by category name.
  */
 
-type CatLike = { name: string; sequence?: number; children?: CatLike[] | undefined }
+type CatLike = { name: string; sequence?: number; count?: number; children?: CatLike[] | undefined }
 
 // Root categories in display order.
 const ROOT_ORDER = [
@@ -104,6 +104,11 @@ export function orderCategoryTree<T extends CatLike>(roots: T[]): T[] {
       ]
     }
   }
+
+  // Hide legacy/empty roots: an old category with no subcategories and no
+  // products (e.g. "Толгойн хамгаалалт" left over from the first import)
+  // should not clutter the menu. Real roots always have children.
+  out = out.filter((c) => (c.children?.length ?? 0) > 0 || (c.count ?? 0) > 0)
 
   // Order children
   out = out.map((c) => {

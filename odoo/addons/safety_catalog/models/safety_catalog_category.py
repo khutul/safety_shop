@@ -36,6 +36,30 @@ class SafetyCatalogCategory(models.Model):
     )
     image = fields.Image(string="Image")
     active = fields.Boolean(string="Active", default=True)
+    odoo_categ_id = fields.Many2one(
+        comodel_name="product.category",
+        string="Odoo Category (auto)",
+        ondelete="set null",
+        copy=False,
+        help="Native Odoo product category auto-created to mirror this storefront category "
+             "(used for standard Odoo reports / inventory grouping).",
+    )
+
+    def _get_or_create_odoo_categ(self):
+        """Return the mirrored native product.category, creating it (and parents) if needed."""
+        self.ensure_one()
+        Categ = self.env["product.category"].sudo()
+        if self.odoo_categ_id:
+            if self.odoo_categ_id.name != self.name:
+                self.odoo_categ_id.name = self.name
+            return self.odoo_categ_id
+        parent = self.parent_id._get_or_create_odoo_categ() if self.parent_id else False
+        vals = {"name": self.name}
+        if parent:
+            vals["parent_id"] = parent.id
+        categ = Categ.create(vals)
+        self.sudo().odoo_categ_id = categ.id
+        return categ
 
     @api.depends("name", "parent_id.complete_name")
     def _compute_complete_name(self):

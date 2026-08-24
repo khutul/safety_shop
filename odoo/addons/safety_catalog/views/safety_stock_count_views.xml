@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_safety_stock_count_form" model="ir.ui.view">
+        <field name="name">safety.stock.count.form</field>
+        <field name="model">safety.stock.count</field>
+        <field name="arch" type="xml">
+            <form string="Хурдан тооллого">
+                <header>
+                    <button name="action_apply" type="object" string="💾 Хадгалах"
+                            class="btn-primary" invisible="not line_ids"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <h2>Хурдан тооллого</h2>
+                        <p style="color:#666;">
+                            Бараагаа сонгоно уу — хэмжээ бүрийн одоогийн үлдэгдэл гарч ирнэ.
+                            "Шинэ тоо" баганад бодит тоогоо бичээд доод талын
+                            <b>Хадгалах</b> товч дарна.
+                        </p>
+                    </div>
+                    <group>
+                        <field name="product_tmpl_id" options="{'no_create': True}"/>
+                    </group>
+                    <field name="line_ids" nolabel="1">
+                        <list editable="bottom" create="false" delete="false">
+                            <field name="variant_id" column_invisible="1"/>
+                            <field name="variant_name" readonly="1"/>
+                            <field name="current_qty" readonly="1"/>
+                            <field name="counted_qty"/>
+                        </list>
+                    </field>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_safety_stock_count" model="ir.actions.act_window">
+        <field name="name">Хурдан тооллого</field>
+        <field name="res_model">safety.stock.count</field>
+        <field name="view_mode">form</field>
+        <field name="target">current</field>
+    </record>
+
+    <!-- Зөвхөн Агуулах (Inventory) апп дотор — ажилтан тооллогоо энд хийнэ -->
+    <menuitem id="menu_safety_stock_count_inv" name="🔢 Хурдан тооллого"
+              parent="stock.menu_stock_root"
+              action="action_safety_stock_count" sequence="6"/>
+
+</odoo>

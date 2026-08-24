@@ -1,19 +1,17 @@
 "use client"
 
 import { useState } from "react"
-import { useParams, useRouter } from "next/navigation"
+import { useRouter } from "next/navigation"
 
 export default function SearchBox() {
   const [q, setQ] = useState("")
   const router = useRouter()
-  const params = useParams()
-  const countryCode = (params?.countryCode as string) || "mn"
 
   const submit = (e: React.FormEvent) => {
     e.preventDefault()
     const term = q.trim()
     if (!term) return
-    router.push(`/${countryCode}/store?q=${encodeURIComponent(term)}`)
+    router.push(`/store?q=${encodeURIComponent(term)}`)
   }
 
   return (

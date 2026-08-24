@@ -27,7 +27,7 @@ type ApiCategory = {
   children?: ApiCategory[]
 }
 
-const STOCK_LABEL: Record<string, string> = { in: "Нөөцтэй", low: "Бага үлдэгдэлтэй", out: "Захиалгаар" }
+const STOCK_LABEL: Record<string, string> = { in: "Нөөцтэй", low: "Бага үлдэгдэлтэй", out: "Үйлдвэрлэгдэж байгаа" }
 
 function fmt(n: number) {
   return `${(n || 0).toLocaleString("mn-MN")}₮`

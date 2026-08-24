@@ -112,7 +112,7 @@ class SafetyPaymentsAPI(http.Controller):
                 "sender_invoice_no": order.name,
                 "invoice_receiver_code": _norm_phone(order.partner_id.phone) or "storefront",
                 "invoice_description": "Manada Safety %s" % order.name,
-                "amount": float(order.amount_total),
+                "amount": int(round(order.amount_total)),
             }
             if c["callback_base"]:
                 payload["callback_url"] = (
@@ -124,7 +124,15 @@ class SafetyPaymentsAPI(http.Controller):
                 headers={"Authorization": "Bearer %s" % token},
                 timeout=TIMEOUT,
             )
-            r.raise_for_status()
+            if r.status_code >= 400:
+                _logger.warning(
+                    "QPay invoice HTTP %s for %s: %s | payload=%s",
+                    r.status_code, order.name, r.text[:600], payload)
+                return request.make_json_response(
+                    {"error": {"code": "qpay_error",
+                               "message": "QPay холболт амжилтгүй. Дараа дахин оролдоно уу.",
+                               "detail": r.text[:400]}},
+                    status=502)
             inv = r.json()
         except requests.RequestException as e:
             _logger.warning("QPay invoice failed for %s: %s", order.name, e)

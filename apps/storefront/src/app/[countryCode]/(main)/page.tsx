@@ -10,7 +10,7 @@ import WhyBand from "@modules/home/components/why-band"
 import Testimonials from "@modules/home/components/testimonials"
 
 export const metadata: Metadata = {
-  title: "Manada Safety - Ажлын хамгаалалтын хэрэгсэл | PPE Монгол",
+  title: { absolute: "Manada Safety — Хөдөлмөр хамгааллын хэрэгсэл | PPE Монгол" },
   description: "Монголын тэргүүлэх PPE нийлүүлэгч. Safetoe, 3M, Honeywell болон 50+ дэлхийн брэнд.",
 }
 

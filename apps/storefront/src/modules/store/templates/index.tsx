@@ -40,12 +40,16 @@ async function resolveIndustryName(slug: string): Promise<string> {
   }
 }
 
-async function resolveBrandName(brandId: string): Promise<string> {
+async function resolveBrandName(brandId?: string, brandSlug?: string): Promise<string> {
   try {
     const res = await fetch(`${API}/brands`, { next: { revalidate: 300 } })
     if (!res.ok) return "Брэнд"
-    const items: { id: number; name: string }[] = await res.json()
-    const found = items.find((b) => b.id === parseInt(brandId))
+    const items: { id: number; name: string; slug?: string }[] = await res.json()
+    const found = items.find(
+      (b) =>
+        (brandId && b.id === parseInt(brandId)) ||
+        (brandSlug && (b.slug || "").toLowerCase() === brandSlug.toLowerCase())
+    )
     return found ? found.name : "Брэнд"
   } catch {
     return "Брэнд"
@@ -58,6 +62,7 @@ const StoreTemplate = async ({
   category,
   categoryId,
   industry,
+  brand,
   brandId,
   q,
   countryCode,
@@ -67,6 +72,7 @@ const StoreTemplate = async ({
   category?: string
   categoryId?: string
   industry?: string
+  brand?: string
   brandId?: string
   q?: string
   countryCode: string
@@ -75,8 +81,8 @@ const StoreTemplate = async ({
   const sort = sortBy || "created_at"
   const title = q
     ? `Хайлт: "${q}"`
-    : brandId
-      ? await resolveBrandName(brandId)
+    : brandId || brand
+      ? await resolveBrandName(brandId, brand)
       : industry
         ? await resolveIndustryName(industry)
         : await resolveCategoryName(category, categoryId)
@@ -102,6 +108,7 @@ const StoreTemplate = async ({
             category={category}
             categoryId={categoryId}
             industry={industry}
+            brand={brand}
             brandId={brandId}
             q={q}
             countryCode={countryCode}

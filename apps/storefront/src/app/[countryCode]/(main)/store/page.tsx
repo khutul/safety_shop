@@ -4,8 +4,9 @@ import { SortOptions } from "@modules/store/components/refinement-list/sort-prod
 import StoreTemplate from "@modules/store/templates"
 
 export const metadata: Metadata = {
-  title: "Store",
-  description: "Explore all of our products.",
+  title: "Бүх бараа — Хөдөлмөр хамгааллын хэрэгсэл",
+  description:
+    "Аюулгүйн гутал, ажлын хувцас, каск, бээлий, нүд амьсгал хамгаалах хэрэгсэл — дэлхийн брэндүүдийн бүрэн нэр төрөл, баталгаат үнэ.",
 }
 
 type Params = {
@@ -15,6 +16,7 @@ type Params = {
     category?: string
     category_id?: string
     industry?: string
+    brand?: string
     brand_id?: string
     q?: string
   }>
@@ -26,7 +28,7 @@ type Params = {
 export default async function StorePage(props: Params) {
   const params = await props.params;
   const searchParams = await props.searchParams;
-  const { sortBy, page, category, category_id, industry, brand_id, q } = searchParams
+  const { sortBy, page, category, category_id, industry, brand, brand_id, q } = searchParams
 
   return (
     <StoreTemplate
@@ -35,6 +37,7 @@ export default async function StorePage(props: Params) {
       category={category}
       categoryId={category_id}
       industry={industry}
+      brand={brand}
       brandId={brand_id}
       q={q}
       countryCode={params.countryCode}

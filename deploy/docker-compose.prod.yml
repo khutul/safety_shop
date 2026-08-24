@@ -1,0 +1,77 @@
+# ============================================================
+#  safety_shop — PRODUCTION / test-server compose
+#  Server-side layout (Ubuntu + Docker):
+#    /opt/safety_shop/           <- git clone of this repo
+#  Run from the repo root:
+#    docker compose -f deploy/docker-compose.prod.yml up -d --build
+#  Only Nginx (host) talks to these; nothing else is exposed
+#  publicly except through the reverse proxy.
+# ============================================================
+
+name: safety_shop_prod
+
+services:
+  db:
+    image: postgres:16
+    container_name: ss_prod_db
+    environment:
+      POSTGRES_DB: postgres
+      POSTGRES_USER: odoo
+      # CHANGE THIS on the server (long random password)
+      POSTGRES_PASSWORD: ${DB_PASSWORD:?set DB_PASSWORD in deploy/.env}
+      PGDATA: /var/lib/postgresql/data/pgdata
+    volumes:
+      - ss_prod_db_data:/var/lib/postgresql/data/pgdata
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "odoo"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+  odoo:
+    image: odoo:19
+    container_name: ss_prod_odoo
+    depends_on:
+      db:
+        condition: service_healthy
+    # NOT exposed to the internet directly — only nginx proxies
+    # /api/v1 and (IP-restricted) /odoo to it.
+    # Port clash on the host? Change ODOO_PORT / ODOO_WS_PORT in deploy/.env.
+    ports:
+      - "127.0.0.1:${ODOO_PORT:-8079}:8069"
+      - "127.0.0.1:${ODOO_WS_PORT:-8089}:8072"
+    volumes:
+      - ss_prod_odoo_data:/var/lib/odoo
+      - ../odoo/config:/etc/odoo
+      - ../odoo/addons:/mnt/extra-addons
+    environment:
+      HOST: db
+      USER: odoo
+      PASSWORD: ${DB_PASSWORD}
+    command: ["odoo", "-c", "/etc/odoo/odoo.conf"]
+    restart: unless-stopped
+
+  storefront:
+    build:
+      context: ../apps/storefront
+      args:
+        # Test server: set to the test URL in deploy/.env;
+        # switch to https://manada.mn at launch and rebuild.
+        NEXT_PUBLIC_BASE_URL: ${SITE_URL:-https://manada.mn}
+    container_name: ss_prod_storefront
+    depends_on:
+      - odoo
+    ports:
+      - "127.0.0.1:${STOREFRONT_PORT:-3001}:3000"
+    environment:
+      ODOO_INTERNAL_URL: http://odoo:8069
+      # Set to "true" ONLY on the live manada.mn deployment
+      ALLOW_INDEXING: ${ALLOW_INDEXING:-false}
+    restart: unless-stopped
+
+volumes:
+  ss_prod_db_data:
+    name: ss_prod_db_data
+  ss_prod_odoo_data:
+    name: ss_prod_odoo_data

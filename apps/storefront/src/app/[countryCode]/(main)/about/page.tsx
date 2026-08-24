@@ -2,7 +2,7 @@ import { Metadata } from "next"
 import LocalizedClientLink from "@modules/common/components/localized-client-link"
 
 export const metadata: Metadata = {
-  title: "Бидний тухай | Manada Safety",
+  title: "Бидний тухай",
   description:
     "МАНАДА ХХК — хөдөлмөр хамгааллын хувцас, хамгаалах хэрэгслийн итгэлт түнш. Safetoe, Safeyear брэндийн Монгол дахь албан ёсны дистрибютор.",
 }
@@ -76,7 +76,7 @@ export default async function AboutPage() {
   const phone = s.phone || "+976 99102250"
   const phone2 = s.phone2 || "99092250"
   const address = s.address || "Сонсголонгийн зам дагуу, Барилгачин ХТ, 3 давхар, С9"
-  const email = s.email || "info@manadasafety.mn"
+  const email = s.email || "info@manada.mn"
   const hours = s.working_hours || "Даваа-Бямба: 09:00-18:00"
 
   return (

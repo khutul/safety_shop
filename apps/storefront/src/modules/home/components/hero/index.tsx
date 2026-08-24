@@ -97,14 +97,14 @@ export default function Hero() {
       <div style={{ position: "absolute", inset: 0, background: "linear-gradient(100deg, rgba(0,0,0,0.88) 30%, rgba(0,0,0,0.55) 55%, rgba(0,0,0,0.08) 100%)" }} />
       <div style={{ position: "absolute", left: 0, top: 0, bottom: 0, width: 4, background: "#FFCC00" }} />
       <div className="ms-hero-inner" style={{ position: "relative", zIndex: 2, display: "flex", alignItems: "center" }}>
-        <div style={{ maxWidth: 640 }}>
+        <div style={{ maxWidth: 740 }}>
           {slide.badge && (
             <div style={{ display: "inline-flex", alignItems: "center", gap: 10, marginBottom: 20, background: "rgba(255,204,0,0.1)", border: "1px solid rgba(255,204,0,0.3)", padding: "6px 14px", borderRadius: 2 }}>
               <div style={{ width: 20, height: 2, background: "#FFCC00" }} />
               <span style={{ color: "#FFCC00", fontSize: 11, fontWeight: 700, letterSpacing: "0.2em", textTransform: "uppercase" }}>{slide.badge}</span>
             </div>
           )}
-          <h1 style={{ fontSize: "clamp(28px,4.5vw,48px)", fontWeight: 900, color: "#fff", lineHeight: 1.1, marginBottom: 18, fontFamily: "var(--ms-font-display)", textTransform: "uppercase", letterSpacing: "0.01em" }}>
+          <h1 style={{ fontSize: "clamp(24px,3.5vw,44px)", fontWeight: 900, color: "#fff", lineHeight: 1.12, marginBottom: 18, fontFamily: "var(--ms-font-display)", textTransform: "uppercase", letterSpacing: "0.01em" }}>
             {slide.lines.map((line, i) => (
               // Middle line gets the brand gold accent (mockup style)
               <span key={i} style={{ display: "block", color: slide.lines.length > 1 && i === 1 ? "#FFCC00" : "#fff" }}>{line}</span>

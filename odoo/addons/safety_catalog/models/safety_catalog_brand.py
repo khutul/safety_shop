@@ -14,5 +14,9 @@ class SafetyCatalogBrand(models.Model):
     )
     sequence = fields.Integer(string="Sequence", default=10)
     logo = fields.Image(string="Logo")
+    cover = fields.Image(
+        string="Cover Image",
+        help="Брэндийн хуудасны толгойн том дэвсгэр зураг (1920x800 орчим).",
+    )
     website = fields.Char(string="Website")
     active = fields.Boolean(string="Active", default=True)

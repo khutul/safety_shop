@@ -100,6 +100,17 @@ export default function ManadaCart() {
         throw new Error(data?.error?.message || "Захиалга илгээхэд алдаа гарлаа.")
       }
       setShortages([])
+      // Захиалгын дугаарыг хэрэглэгчийн төхөөрөмжид (browser) хадгална —
+      // дараа орж ирэхэд "Миний захиалгууд" хэсэгт нэг товшилтоор шалгана.
+      try {
+        const KEY = "manada_orders_v1"
+        const prev = JSON.parse(localStorage.getItem(KEY) || "[]")
+        const next = [
+          { name: data.order_name, phone: form.phone, total, date: new Date().toISOString() },
+          ...prev.filter((o: any) => o && o.name !== data.order_name),
+        ].slice(0, 30)
+        localStorage.setItem(KEY, JSON.stringify(next))
+      } catch {}
       setDone({ orderName: data.order_name, phone: form.phone })
       clear()
     } catch (e: any) {
@@ -221,11 +232,21 @@ export default function ManadaCart() {
               <span style={{ fontSize: 13, color: "rgba(255,255,255,0.6)" }}>Нийт дүн</span>
               <span style={{ fontSize: 22, fontWeight: 800, color: "#FFCC00" }}>{fmt(total)}</span>
             </div>
-            <div style={{ display: "flex", gap: 8, alignItems: "flex-start", fontSize: 11.5, color: "rgba(255,255,255,0.45)", marginBottom: 14 }}>
-              <svg width="15" height="15" fill="none" stroke="#FFCC00" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 24 24" style={{ flexShrink: 0, marginTop: 1 }}>
-                <path d="M3 7h11v8H3z M14 10h4l3 3v2h-7z" /><circle cx="7" cy="17" r="1.6" /><circle cx="17" cy="17" r="1.6" />
-              </svg>
-              <span>100,000₮-с дээш захиалгад Улаанбаатар хотод хүргэлт үнэгүй. Төлбөрийг ажилтан холбогдож баталгаажуулна.</span>
+            {/* Захиалгын нөхцөлийн мэдээлэл (толгойн мөрнөөс нүүлгэн ирүүлсэн) */}
+            <div style={{ border: "1px solid var(--ms-border)", borderRadius: 4, padding: "4px 12px", marginBottom: 14 }}>
+              {[
+                { d: "M12 3l7 3v6c0 4-3 7-7 9-4-2-7-5-7-9V6z M9 12l2 2 4-4", t: "100% жинхэнэ бараа — албан ёсны баталгаатай" },
+                { d: "M3 7h11v8H3z M14 10h4l3 3v2h-7z", t: "100,000₮-с дээш захиалгад УБ хотод хүргэлт үнэгүй" },
+                { d: "M12 3a9 9 0 1 0 0 18 9 9 0 0 0 0-18z M12 7v5l3 3", t: "УБ хотод 24 цагийн дотор хүргэнэ" },
+                { d: "M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z", t: "Төлбөрийг ажилтан холбогдож баталгаажуулна" },
+              ].map((r, i) => (
+                <div key={i} style={{ display: "flex", gap: 8, alignItems: "flex-start", fontSize: 11.5, color: "rgba(255,255,255,0.55)", padding: "8px 0", borderTop: i > 0 ? "1px solid var(--ms-border-soft)" : "none" }}>
+                  <svg width="15" height="15" fill="none" stroke="#FFCC00" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 24 24" style={{ flexShrink: 0, marginTop: 1 }}>
+                    {r.d.split(" M").map((s, j) => <path key={j} d={j === 0 ? s : "M" + s} />)}
+                  </svg>
+                  <span>{r.t}</span>
+                </div>
+              ))}
             </div>
 
             {error && (

@@ -8,3 +8,5 @@ from . import product_template
 from . import safety_site_hero
 from . import safety_site_settings
 from . import safety_site_industry
+from . import safety_partner_request
+from . import safety_stock_count

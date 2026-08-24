@@ -46,7 +46,7 @@ function StoreCard({ product }: { product: HttpTypes.StoreProduct }) {
           <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 8, marginTop: "auto" }}>
             <span style={{ fontSize: 15, fontWeight: 800, color: "#FFCC00" }}>{price > 0 ? fmt(price) : "Үнэ асуух"}</span>
             <span style={{ color: inStock ? "#7fc75e" : "rgba(255,255,255,0.45)", fontSize: 10, fontWeight: 600 }}>
-              {inStock ? "Нөөцтэй" : "Захиалгаар"}
+              {inStock ? "Нөөцтэй" : "Үйлдвэрлэгдэж байгаа"}
             </span>
           </div>
         </div>
@@ -61,6 +61,7 @@ export default async function PaginatedProducts({
   category,
   categoryId,
   industry,
+  brand,
   brandId,
   q,
   productsIds,
@@ -71,6 +72,7 @@ export default async function PaginatedProducts({
   category?: string
   categoryId?: string
   industry?: string
+  brand?: string
   brandId?: string
   q?: string
   productsIds?: string[]
@@ -80,6 +82,7 @@ export default async function PaginatedProducts({
   if (category) queryParams.category = category
   if (categoryId) queryParams.category_id = categoryId
   if (industry) queryParams.industry = industry
+  if (brand) queryParams.brand = brand
   if (brandId) queryParams.brand_id = brandId
   if (q) queryParams.q = q
   if (productsIds) queryParams.id = productsIds

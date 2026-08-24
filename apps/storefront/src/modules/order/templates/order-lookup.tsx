@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import LocalizedClientLink from "@modules/common/components/localized-client-link"
 
 const API = typeof window === "undefined" ? (process.env.ODOO_INTERNAL_URL || "http://localhost:8079") + "/api/v1" : "/api/v1"
@@ -37,17 +37,28 @@ const inputStyle: React.CSSProperties = {
   outline: "none",
 }
 
+type Saved = { name: string; phone: string; total?: number; date?: string }
+
 export default function OrderLookup() {
   const [phone, setPhone] = useState("")
   const [orderName, setOrderName] = useState("")
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState("")
   const [result, setResult] = useState<Result | null>(null)
+  const [saved, setSaved] = useState<Saved[]>([])
 
-  const submit = async () => {
+  // Энэ төхөөрөмж дээр хадгалагдсан захиалгууд
+  useEffect(() => {
+    try {
+      const arr = JSON.parse(localStorage.getItem("manada_orders_v1") || "[]")
+      if (Array.isArray(arr)) setSaved(arr.filter((o) => o && o.name && o.phone))
+    } catch {}
+  }, [])
+
+  const lookup = async (ph: string, name: string) => {
     setError("")
     setResult(null)
-    if (!phone.trim() || !orderName.trim()) {
+    if (!ph.trim() || !name.trim()) {
       setError("Утасны дугаар болон захиалгын дугаараа оруулна уу.")
       return
     }
@@ -56,7 +67,7 @@ export default function OrderLookup() {
       const res = await fetch(`${API}/orders/lookup`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ phone, order_name: orderName.trim() }),
+        body: JSON.stringify({ phone: ph, order_name: name.trim() }),
       })
       const data = await res.json().catch(() => ({}))
       if (res.status === 404) {
@@ -76,6 +87,15 @@ export default function OrderLookup() {
     } finally {
       setLoading(false)
     }
+  }
+
+  const submit = () => lookup(phone, orderName)
+
+  const openSaved = (o: Saved) => {
+    setPhone(o.phone)
+    setOrderName(o.name)
+    lookup(o.phone, o.name)
+    if (typeof window !== "undefined") window.scrollTo({ top: 0, behavior: "smooth" })
   }
 
   const st = result ? STATE_LABEL[result.state] || { label: result.state, color: "#fff" } : null
@@ -114,6 +134,38 @@ export default function OrderLookup() {
             {loading ? "Шалгаж байна..." : "Шалгах"}
           </button>
         </div>
+
+        {/* Энэ төхөөрөмж дээр хадгалагдсан захиалгууд — нэг товшилтоор шалгах */}
+        {saved.length > 0 && (
+          <div style={{ background: "var(--ms-surface)", border: "1px solid var(--ms-border)", borderRadius: 6, padding: "16px 18px", marginBottom: 20 }}>
+            <div style={{ fontSize: 12, fontWeight: 800, color: "rgba(255,255,255,0.6)", textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: 12 }}>
+              Миний захиалгууд
+            </div>
+            <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+              {saved.map((o) => (
+                <button
+                  key={o.name}
+                  onClick={() => openSaved(o)}
+                  style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 10, background: "var(--ms-elevated)", border: "1px solid var(--ms-border)", borderRadius: 4, padding: "10px 14px", cursor: "pointer", textAlign: "left", width: "100%" }}
+                >
+                  <span style={{ display: "flex", flexDirection: "column" }}>
+                    <span style={{ fontSize: 14, fontWeight: 700, color: "#FFCC00" }}>{o.name}</span>
+                    {o.date && (
+                      <span style={{ fontSize: 11.5, color: "rgba(255,255,255,0.45)", marginTop: 2 }}>
+                        {new Date(o.date).toLocaleDateString("mn-MN")}
+                        {typeof o.total === "number" ? ` · ${fmt(o.total)}` : ""}
+                      </span>
+                    )}
+                  </span>
+                  <span style={{ fontSize: 12.5, color: "rgba(255,255,255,0.6)", display: "flex", alignItems: "center", gap: 5 }}>
+                    Шалгах
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2"><path d="M9 6l6 6-6 6" /></svg>
+                  </span>
+                </button>
+              ))}
+            </div>
+          </div>
+        )}
 
         {result && st && (
           <div style={{ background: "var(--ms-surface)", border: "1px solid var(--ms-border)", borderRadius: 6, overflow: "hidden" }}>

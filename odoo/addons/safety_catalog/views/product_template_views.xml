@@ -60,7 +60,9 @@
                     <group>
                         <group string="Publishing">
                             <field name="storefront_published"/>
-                            <field name="slug"/>
+                            <field name="slug" readonly="1"
+                                   placeholder="Нэрнээс автоматаар үүснэ"
+                                   help="URL slug барааны нэрнээс автоматаар үүснэ — гараар засах шаардлагагүй."/>
                         </group>
                         <group string="Meta">
                             <field name="meta_title"/>
@@ -70,6 +72,28 @@
                         <field name="meta_description" nolabel="1"/>
                     </group>
                 </page>
+            </xpath>
+        </field>
+    </record>
+
+    <!-- Products жагсаалтад Storefront Category / Brand-аар шүүх, бүлэглэх -->
+    <record id="view_product_template_search_safety_catalog" model="ir.ui.view">
+        <field name="name">product.template.search.safety.catalog</field>
+        <field name="model">product.template</field>
+        <field name="inherit_id" ref="product.product_template_search_view"/>
+        <field name="arch" type="xml">
+            <xpath expr="//search" position="inside">
+                <field name="storefront_categ_ids"/>
+                <field name="brand_id"/>
+                <filter name="sf_published" string="Вэбэд нийтэлсэн"
+                        domain="[('storefront_published', '=', True)]"/>
+                <filter name="sf_not_published" string="Нийтлээгүй"
+                        domain="[('storefront_published', '=', False)]"/>
+                <separator/>
+                <filter name="group_storefront_categ" string="Вэб ангилал"
+                        context="{'group_by': 'storefront_categ_ids'}"/>
+                <filter name="group_brand" string="Брэнд"
+                        context="{'group_by': 'brand_id'}"/>
             </xpath>
         </field>
     </record>

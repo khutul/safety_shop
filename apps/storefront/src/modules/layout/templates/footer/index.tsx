@@ -1,37 +1,21 @@
 import LocalizedClientLink from "@modules/common/components/localized-client-link"
+import { orderCategoryTree } from "@lib/util/category-order"
 
 const API = typeof window === "undefined" ? (process.env.ODOO_INTERNAL_URL || "http://localhost:8079") + "/api/v1" : "/api/v1"
 
-const LINK_COLS = [
-  {
-    title: "Бүтээгдэхүүн",
-    links: [
-      { label: "Ажлын хувцас", href: "/store" },
-      { label: "Гутал", href: "/store" },
-      { label: "Толгой хамгаалалт", href: "/store" },
-      { label: "Бээлий", href: "/store" },
-      { label: "Маск", href: "/store" },
-      { label: "Нүд хамгаалалт", href: "/store" },
-    ],
-  },
-  {
-    title: "Компани",
-    links: [
-      { label: "Бидний тухай", href: "/about" },
-      { label: "Захиалга өгөх", href: "/store" },
-      { label: "Захиалга шалгах", href: "/order-status" },
-      { label: "Холбоо барих", href: "/about" },
-    ],
-  },
-  {
-    title: "Мэдээлэл",
-    links: [
-      { label: "Хүргэлтийн журам", href: "/about" },
-      { label: "Буцаалтын журам", href: "/about" },
-      { label: "Нууцлалын бодлого", href: "/about" },
-    ],
-  },
-]
+type Cat = { id: number; name: string; slug: string; count?: number; children?: Cat[] }
+
+/** Real root categories for the "Бүтээгдэхүүн" column. */
+async function getRootCats(): Promise<Cat[]> {
+  try {
+    const res = await fetch(`${API}/categories?lang=mn`, { next: { revalidate: 300 } })
+    if (!res.ok) return []
+    const d = await res.json()
+    return Array.isArray(d) ? orderCategoryTree(d) : []
+  } catch {
+    return []
+  }
+}
 
 type SiteSettings = {
   phone?: string
@@ -54,13 +38,13 @@ async function getSettings(): Promise<SiteSettings> {
 }
 
 export default async function Footer() {
-  const s = await getSettings()
+  const [s, cats] = await Promise.all([getSettings(), getRootCats()])
   const phone = s.phone || "+976 99102250"
   const phoneLabel = s.phone2 ? `${phone}, ${s.phone2}` : phone
   const telHref = "tel:" + phone.replace(/\s/g, "")
   const address = s.address || "Барилгачин ХТ, 3 давхар, С9"
   const hours = s.working_hours || "Даваа-Бямба: 09:00-18:00"
-  const email = s.email || "info@manadasafety.mn"
+  const email = s.email || "info@manada.mn"
   const facebook = s.facebook_url || "https://www.facebook.com/Manadasafetymongolia"
   const instagram = s.instagram_url || "https://www.instagram.com/gutal.safetymn"
 
@@ -69,6 +53,38 @@ export default async function Footer() {
     { label: address, href: "#", gold: false },
     { label: hours, href: "#", gold: false },
     { label: email, href: "mailto:" + email, gold: false },
+  ]
+
+  // Facebook chat (m.me) link derived from the page URL
+  const fbPage = (facebook.match(/facebook\.com\/([^/?#]+)/) || [])[1] || "Manadasafetymongolia"
+  const messenger = `https://m.me/${fbPage}`
+
+  const linkCols: { title: string; links: { label: string; href: string; external?: boolean }[] }[] = [
+    {
+      title: "Бүтээгдэхүүн",
+      links: cats.slice(0, 7).map((c) => ({
+        label: c.name,
+        href: c.slug ? `/store?category=${c.slug}` : `/store?category_id=${c.id}`,
+      })),
+    },
+    {
+      title: "Компани",
+      links: [
+        { label: "Бидний тухай", href: "/about" },
+        { label: "Захиалга өгөх", href: "/store" },
+        { label: "Захиалга шалгах", href: "/order-status" },
+        { label: "Лого хатгамал", href: "/embroidery" },
+        { label: "Хамтран ажиллах хүсэлт", href: "/partnership" },
+      ],
+    },
+    {
+      title: "Холбоо барих",
+      links: [
+        { label: `Утас: ${phone}`, href: telHref, external: true },
+        { label: "Facebook чат", href: messenger, external: true },
+        { label: email, href: "mailto:" + email, external: true },
+      ],
+    },
   ]
 
   return (
@@ -107,13 +123,17 @@ export default async function Footer() {
               </a>
             </div>
           </div>
-          {LINK_COLS.map((col) => (
+          {linkCols.map((col) => (
             <div key={col.title}>
               <div style={{ fontSize: 11, fontWeight: 800, color: "#FFCC00", textTransform: "uppercase", letterSpacing: "0.12em", marginBottom: 16, paddingBottom: 8, borderBottom: "1px solid #2A2A2A" }}>{col.title}</div>
               <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
-                {col.links.map((link) => (
-                  <LocalizedClientLink key={link.label} href={link.href} style={{ color: "rgba(255,255,255,0.45)", fontSize: 12, textDecoration: "none" }}>{link.label}</LocalizedClientLink>
-                ))}
+                {col.links.map((link) =>
+                  link.external ? (
+                    <a key={link.label} href={link.href} target={link.href.startsWith("http") ? "_blank" : undefined} rel="noreferrer" style={{ color: "rgba(255,255,255,0.45)", fontSize: 12, textDecoration: "none" }}>{link.label}</a>
+                  ) : (
+                    <LocalizedClientLink key={link.label} href={link.href} style={{ color: "rgba(255,255,255,0.45)", fontSize: 12, textDecoration: "none" }}>{link.label}</LocalizedClientLink>
+                  )
+                )}
               </div>
             </div>
           ))}
