@@ -415,7 +415,7 @@ class SafetyCatalogAPI(http.Controller):
 
     # ---------------- Partnership requests ----------------
     @http.route("/api/v1/partnership", type="http", auth="public",
-                methods=["POST", "OPTIONS"], csrf=False, cors="*")
+                methods=["POST", "OPTIONS"], csrf=False)
     def create_partnership_request(self, **kw):
         import json
         if request.httprequest.method == "OPTIONS":
@@ -484,7 +484,7 @@ class SafetyCatalogAPI(http.Controller):
 
     # ---------------- Orders ----------------
     @http.route("/api/v1/orders", type="http", auth="public",
-                methods=["POST", "OPTIONS"], csrf=False, cors="*")
+                methods=["POST", "OPTIONS"], csrf=False)
     def create_order(self, **kw):
         import json
         if request.httprequest.method == "OPTIONS":
@@ -624,7 +624,7 @@ class SafetyCatalogAPI(http.Controller):
         })
 
     @http.route("/api/v1/orders/lookup", type="http", auth="public",
-                methods=["POST", "OPTIONS"], csrf=False, cors="*")
+                methods=["POST", "OPTIONS"], csrf=False)
     def lookup_order(self, **kw):
         import json
         if request.httprequest.method == "OPTIONS":

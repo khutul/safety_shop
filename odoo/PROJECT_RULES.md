@@ -73,13 +73,16 @@ must honor the API contract and the architecture principles below.
 
 ## 3. Module Naming Convention
 
-- **Module technical name:** `safety_shop_<concern>` — lowercase, snake_case.
-  Examples: `safety_shop_product`, `safety_shop_brand`, `safety_shop_api`.
-- **Model `_name`:** dot-namespaced under the project: `safety_shop.brand`,
-  `safety_shop.product.image`, `safety_shop.product.document`.
+- **Module technical name:** `safety_<concern>` — lowercase, snake_case.
+  Existing modules: `safety_catalog`, `safety_api`. *(Updated 2026-08-24 to
+  match the implemented modules; the original `safety_shop_*` scheme was
+  shortened before the first release and renaming now would risk data loss.)*
+- **Model `_name`:** dot-namespaced under the project: `safety.catalog.brand`,
+  `safety.catalog.product.image`, `safety.catalog.product.document`,
+  `safety.site.hero`, `safety.partner.request`.
 - **Module folder layout (standard Odoo):**
   ```
-  safety_shop_product/
+  safety_catalog/
   ├── __init__.py
   ├── __manifest__.py
   ├── models/
@@ -96,8 +99,8 @@ must honor the API contract and the architecture principles below.
 - **`__manifest__.py`:** accurate `name`, `summary`, `version`
   (`19.0.1.0.0`), `depends` (minimal!), `license` (`LGPL-3`), `author`,
   `category`. Declare *only* the dependencies actually used.
-- **XML IDs:** `<model>_<purpose>` style, e.g. `view_safety_shop_brand_form`,
-  `action_safety_shop_brand`, `menu_safety_shop_brand`.
+- **XML IDs:** `<model>_<purpose>` style, e.g. `view_safety_catalog_brand_form`,
+  `action_safety_catalog_brand`, `menu_safety_catalog_brand`.
 
 ---
 

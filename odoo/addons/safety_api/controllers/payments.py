@@ -87,7 +87,7 @@ class SafetyPaymentsAPI(http.Controller):
         return request.make_json_response({"enabled": self._enabled(self._conf())})
 
     @http.route("/api/v1/payments/qpay/invoice", type="http", auth="public",
-                methods=["POST", "OPTIONS"], csrf=False, cors="*")
+                methods=["POST", "OPTIONS"], csrf=False)
     def qpay_invoice(self, **kw):
         if request.httprequest.method == "OPTIONS":
             return request.make_json_response({})
@@ -153,7 +153,7 @@ class SafetyPaymentsAPI(http.Controller):
         })
 
     @http.route("/api/v1/payments/qpay/check", type="http", auth="public",
-                methods=["POST", "OPTIONS"], csrf=False, cors="*")
+                methods=["POST", "OPTIONS"], csrf=False)
     def qpay_check(self, **kw):
         if request.httprequest.method == "OPTIONS":
             return request.make_json_response({})
@@ -200,7 +200,7 @@ class SafetyPaymentsAPI(http.Controller):
         return request.make_json_response({"ok": True, "paid": paid, "paid_amount": int(paid_amount)})
 
     @http.route("/api/v1/payments/qpay/callback", type="http", auth="public",
-                methods=["GET", "POST"], csrf=False, cors="*")
+                methods=["GET", "POST"], csrf=False)
     def qpay_callback(self, **kw):
         """Called by QPay when an invoice is paid (requires public URL)."""
         order_name = (kw.get("order") or "").strip()
