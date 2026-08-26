@@ -19,6 +19,7 @@ db_password = CHANGE_ME_db_password
 
 ; Only show / allow databases that belong to THIS project.
 dbfilter = ^safety_shop.*$
+; PRODUCTION: list_db = False (hides /web/database/manager; nginx also blocks it)
 list_db = True
 
 ; --- Addons ---
@@ -30,9 +31,12 @@ data_dir = /var/lib/odoo
 ; --- Networking / ports (inside the container) ---
 http_port = 8069
 gevent_port = 8072
+; PRODUCTION: proxy_mode = True (behind nginx; needed so Odoo sees the real
+; client IP from X-Forwarded-For — the API rate limiter depends on it)
 proxy_mode = False
 
 ; --- Developer-friendly settings ---
+; PRODUCTION: workers = 2 (or more), max_cron_threads = 1
 workers = 0
 max_cron_threads = 1
 log_level = info
