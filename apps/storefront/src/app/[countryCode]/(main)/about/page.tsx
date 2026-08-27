@@ -82,10 +82,18 @@ export default async function AboutPage() {
 
   return (
     <div style={{ background: "#fff" }}>
-      {/* ── Page hero band ── */}
+      {/* ── Page hero band (дэлгүүрийн панорам дэвсгэртэй) ── */}
       <div style={{ position: "relative", background: "#151515", overflow: "hidden" }}>
-        <div style={{ position: "absolute", left: 0, top: 0, bottom: 0, width: 4, background: "#FFCC00" }} />
-        <div className="ms-container" style={{ padding: "56px 20px 60px" }}>
+        <div
+          style={{
+            position: "absolute", inset: 0,
+            backgroundImage: "url(/about/hero.jpg)",
+            backgroundSize: "cover", backgroundPosition: "center",
+          }}
+        />
+        <div style={{ position: "absolute", inset: 0, background: "linear-gradient(90deg, rgba(15,15,15,0.88) 0%, rgba(15,15,15,0.55) 55%, rgba(15,15,15,0.25) 100%)" }} />
+        <div style={{ position: "absolute", left: 0, top: 0, bottom: 0, width: 4, background: "#FFCC00", zIndex: 1 }} />
+        <div className="ms-container" style={{ padding: "72px 20px 76px", position: "relative", zIndex: 1 }}>
           <div style={{ fontSize: 12, color: "rgba(255,255,255,0.5)", letterSpacing: "0.1em", textTransform: "uppercase", marginBottom: 14 }}>
             <LocalizedClientLink href="/" style={{ color: "rgba(255,255,255,0.5)", textDecoration: "none" }}>Нүүр</LocalizedClientLink>
             <span style={{ margin: "0 8px" }}>/</span>
@@ -107,30 +115,31 @@ export default async function AboutPage() {
           <span className="title">МАНАДА ХХК</span>
           <div className="rule" />
         </div>
-        <div style={{ maxWidth: 820, color: "#374151", fontSize: 15, lineHeight: 1.9 }}>
-          <p style={{ margin: "0 0 16px" }}>
-            2023 оноос үйл ажиллагаагаа явуулж эхэлсэн <strong>“Манада” ХХК</strong> нь хөдөлмөр хамгааллын хувцас,
-            хамгаалах хэрэгсэл, тоног төхөөрөмж, сэлбэг материалын худалдаа, үйлчилгээний чиглэлээр ажиллаж байна.
-          </p>
-          <p style={{ margin: "0 0 16px" }}>
-            Бид уул уурхай, барилга, үйлдвэрлэл, зам тээвэр, эмнэлэг болон бусад аж ахуйн нэгжийн хэрэгцээнд нийцсэн
-            хөдөлмөр хамгааллын хувцас, тусгай хэрэгслийг 4 улирлын онцлогт тохируулан, чанар, загвар, материалын өргөн
-            сонголттойгоор нийлүүлж байна.
-          </p>
-          <p style={{ margin: "0 0 16px" }}>
-            Түүнчлэн манай компани тоног төхөөрөмж, цахилгаан, автоматжуулалтын сэлбэг, материалыг чанарын өндөр
-            шалгуураар нийлүүлэн ажилласаар ирсэн. Харилцагч бүрийн хэрэгцээ шаардлагад нийцсэн уян хатан үнэ,
-            стандартын шаардлага хангасан бүтээгдэхүүнээр үйлчлэх нь бидний зорилго.
-          </p>
-          <p style={{ margin: 0 }}>
-            Цаашид “Манада” ХХК нь дотоодын үйлдвэрлэгч болох зорилго тавин, нийгэм болон улс орондоо хүлээсэн үүргээ
-            нэр төртэйгээр биелүүлэхээр чармайн ажиллаж байна.
-          </p>
+        <div className="ms-about-grid">
+          <div style={{ color: "#374151", fontSize: 14, lineHeight: 1.8 }}>
+            <p style={{ margin: "0 0 14px" }}>
+              2023 оноос үйл ажиллагаагаа явуулж эхэлсэн <strong>“Манада” ХХК</strong> нь хөдөлмөр хамгааллын хувцас,
+              хамгаалах хэрэгсэл, тоног төхөөрөмж, сэлбэг материалын худалдаа, үйлчилгээний чиглэлээр ажиллаж байна.
+            </p>
+            <p style={{ margin: "0 0 14px" }}>
+              Бид уул уурхай, барилга, үйлдвэрлэл, зам тээвэр, эмнэлэг болон бусад аж ахуйн нэгжийн хэрэгцээнд нийцсэн
+              хөдөлмөр хамгааллын хувцас, тусгай хэрэгслийг 4 улирлын онцлогт тохируулан, чанар, загвар, материалын өргөн
+              сонголттойгоор нийлүүлж байна.
+            </p>
+            <p style={{ margin: "0 0 14px" }}>
+              Түүнчлэн манай компани тоног төхөөрөмж, цахилгаан, автоматжуулалтын сэлбэг, материалыг чанарын өндөр
+              шалгуураар нийлүүлэн ажилласаар ирсэн. Харилцагч бүрийн хэрэгцээ шаардлагад нийцсэн уян хатан үнэ,
+              стандартын шаардлага хангасан бүтээгдэхүүнээр үйлчлэх нь бидний зорилго.
+            </p>
+            <p style={{ margin: 0 }}>
+              Цаашид “Манада” ХХК нь дотоодын үйлдвэрлэгч болох зорилго тавин, нийгэм болон улс орондоо хүлээсэн үүргээ
+              нэр төртэйгээр биелүүлэхээр чармайн ажиллаж байна.
+            </p>
+          </div>
+          {/* Дэлгүүрийн зургийн слайд — текстийн хажууд */}
+          <ShopGallery />
         </div>
       </section>
-
-      {/* ── Shop gallery ── */}
-      <ShopGallery />
 
       {/* ── Advantages ── */}
       <section style={{ background: "#f7f7f8", padding: "48px 0", marginTop: 40 }}>

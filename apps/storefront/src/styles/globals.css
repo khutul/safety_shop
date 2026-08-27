@@ -304,7 +304,14 @@ html, body {
   .ms-grid-industries { grid-template-columns: repeat(3, 1fr); }
   .ms-lookup-grid { grid-template-columns: 1fr 1fr; }
 }
+.ms-about-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 26px;
+  align-items: center;
+}
 @media (min-width: 900px) {
+  .ms-about-grid { grid-template-columns: 1.05fr 1fr; }
   .ms-trustgrid { grid-template-columns: repeat(4, 1fr); }
   .ms-pdp-grid { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 40px; }
 }

@@ -58,13 +58,7 @@ export default function ShopGallery() {
   }
 
   return (
-    <section className="ms-container" style={{ padding: "8px 20px 8px" }}>
-      <div className="ms-sechead">
-        <div className="bar" />
-        <span className="title">Манай дэлгүүр</span>
-        <div className="rule" />
-      </div>
-      <div style={{ position: "relative", overflow: "hidden", borderRadius: 10, background: "#0f0f0f" }}>
+    <div style={{ position: "relative", overflow: "hidden", borderRadius: 10, background: "#0f0f0f" }}>
         {/* Слайдын зурвас */}
         <div
           style={{
@@ -79,7 +73,7 @@ export default function ShopGallery() {
               key={src}
               src={src}
               alt="Манада дэлгүүр"
-              style={{ width: "100%", flexShrink: 0, height: "min(56vw, 480px)", objectFit: "cover", display: "block" }}
+              style={{ width: "100%", flexShrink: 0, height: "min(60vw, 400px)", objectFit: "cover", display: "block" }}
             />
           ))}
         </div>
@@ -103,7 +97,6 @@ export default function ShopGallery() {
             </div>
           </>
         )}
-      </div>
-    </section>
+    </div>
   )
 }
