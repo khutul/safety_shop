@@ -20,6 +20,9 @@ export const metadata: Metadata = {
     "каск", "бээлий", "PPE", "Safetoe", "Manada Safety", "манада",
   ],
   robots: INDEXABLE ? { index: true, follow: true } : { index: false, follow: false },
+  verification: {
+    google: "ukPXhmVak3N687_q208gAQlAHwnvBxZYioITe35NNuw",
+  },
   openGraph: {
     type: "website",
     siteName: "Manada Safety",
