@@ -57,21 +57,6 @@ const INDUSTRIES = [
   "Харуул хамгаалалт",
 ]
 
-const PARTNERS = [
-  "Барилгачин групп",
-  "Улаанбаатар менежмент ХХК",
-  "Мон Логистикс Тракинг ХХК",
-  "Sandvik Mongolia",
-  "Монос Хүнс ХХК",
-  "Монкабель ХХК",
-  "Цемент Шохой ХХК",
-  "Тавантолгойн Төмөр Зам ХХК",
-  "Нью Улаанбаатар Интернэйшнл Эйрпорт",
-  "Улаанбаатар хотын Захирагчийн алба",
-  "Айзавамонгол ХХК",
-  "Гүүд Дриллинг ХХК",
-]
-
 export default async function AboutPage() {
   const s = await getSettings()
   const phone = s.phone || "+976 99102250"
@@ -91,7 +76,7 @@ export default async function AboutPage() {
             backgroundSize: "cover", backgroundPosition: "center",
           }}
         />
-        <div style={{ position: "absolute", inset: 0, background: "linear-gradient(90deg, rgba(15,15,15,0.88) 0%, rgba(15,15,15,0.55) 55%, rgba(15,15,15,0.25) 100%)" }} />
+        <div style={{ position: "absolute", inset: 0, background: "linear-gradient(90deg, rgba(15,15,15,0.93) 0%, rgba(15,15,15,0.75) 55%, rgba(15,15,15,0.55) 100%)" }} />
         <div style={{ position: "absolute", left: 0, top: 0, bottom: 0, width: 4, background: "#FFCC00", zIndex: 1 }} />
         <div className="ms-container" style={{ padding: "72px 20px 76px", position: "relative", zIndex: 1 }}>
           <div style={{ fontSize: 12, color: "rgba(255,255,255,0.5)", letterSpacing: "0.1em", textTransform: "uppercase", marginBottom: 14 }}>
@@ -201,29 +186,6 @@ export default async function AboutPage() {
               {ind}
             </span>
           ))}
-        </div>
-      </section>
-
-      {/* ── Partners ── */}
-      <section style={{ background: "#f7f7f8", padding: "48px 0", marginTop: 32 }}>
-        <div className="ms-container">
-          <div className="ms-sechead">
-            <div className="bar" />
-            <span className="title">Хамтрагч байгууллагууд</span>
-            <div className="rule" />
-          </div>
-          <p style={{ color: "#6b7280", fontSize: 14, marginBottom: 20 }}>
-            Уул уурхай, үйлдвэрлэл, барилга, зам тээвэр, эмнэлэг, харуул хамгаалалт болон бусад салбарын
-            <strong style={{ color: "#151515" }}> 300 гаруй байгууллагад</strong> бүтээгдэхүүнээ нийлүүлж ажиллаж байна.
-          </p>
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(230px, 1fr))", gap: 10 }}>
-            {PARTNERS.map((p) => (
-              <div key={p} style={{ background: "#fff", border: "1px solid #ededed", borderRadius: 6, padding: "12px 16px", fontSize: 13, color: "#374151", display: "flex", alignItems: "center", gap: 10 }}>
-                <span style={{ width: 6, height: 6, borderRadius: "50%", background: "#FFCC00", flexShrink: 0 }} />
-                {p}
-              </div>
-            ))}
-          </div>
         </div>
       </section>
 
