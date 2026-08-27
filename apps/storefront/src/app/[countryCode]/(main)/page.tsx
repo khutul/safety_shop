@@ -4,7 +4,6 @@ import TrustBar from "@modules/home/components/trust-bar"
 import BrandLogos from "@modules/home/components/brand-logos"
 import CategoryCards from "@modules/home/components/category-cards"
 import FeaturedBlock from "@modules/home/components/featured-block"
-import CategoryRails from "@modules/home/components/category-rails"
 import IndustrySection from "@modules/home/components/industry-section"
 import WhyBand from "@modules/home/components/why-band"
 import Testimonials from "@modules/home/components/testimonials"
@@ -25,7 +24,6 @@ export default async function Home(props: {
       <BrandLogos />
       <CategoryCards />
       <FeaturedBlock />
-      <CategoryRails />
       <IndustrySection />
       <WhyBand />
       <Testimonials />
