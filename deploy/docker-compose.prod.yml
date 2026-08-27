@@ -59,6 +59,7 @@ services:
         # Test server: set to the test URL in deploy/.env;
         # switch to https://manada.mn at launch and rebuild.
         NEXT_PUBLIC_BASE_URL: ${SITE_URL:-https://manada.mn}
+        ALLOW_INDEXING: ${ALLOW_INDEXING:-false}
     container_name: ss_prod_storefront
     depends_on:
       - odoo

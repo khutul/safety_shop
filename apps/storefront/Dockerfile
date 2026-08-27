@@ -11,6 +11,9 @@ COPY . .
 # Build-time env (baked into the client bundle)
 ARG NEXT_PUBLIC_BASE_URL=https://manada.mn
 ENV NEXT_PUBLIC_BASE_URL=$NEXT_PUBLIC_BASE_URL
+# robots.txt is prerendered at build time — pass the flag here too
+ARG ALLOW_INDEXING=false
+ENV ALLOW_INDEXING=$ALLOW_INDEXING
 # API is reached server-side through the docker network
 ENV ODOO_INTERNAL_URL=http://odoo:8069
 ENV NODE_ENV=production
