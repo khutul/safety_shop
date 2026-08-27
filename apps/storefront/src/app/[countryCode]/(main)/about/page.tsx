@@ -1,5 +1,6 @@
 import { Metadata } from "next"
 import LocalizedClientLink from "@modules/common/components/localized-client-link"
+import ShopGallery from "@modules/about/shop-gallery"
 
 export const metadata: Metadata = {
   title: "Бидний тухай",
@@ -127,6 +128,9 @@ export default async function AboutPage() {
           </p>
         </div>
       </section>
+
+      {/* ── Shop gallery ── */}
+      <ShopGallery />
 
       {/* ── Advantages ── */}
       <section style={{ background: "#f7f7f8", padding: "48px 0", marginTop: 40 }}>
