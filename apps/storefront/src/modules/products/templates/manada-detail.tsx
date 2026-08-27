@@ -311,7 +311,7 @@ export default function ManadaProductDetail({ product, base, phone }: { product:
           {/* Trust / delivery info */}
           <div style={{ border: "1px solid var(--ms-border)", borderRadius: 8, background: "var(--ms-surface)", padding: "4px 16px", marginBottom: 20 }}>
             {[
-              { icon: "🚚", t: "Хүргэлт", s: "Улаанбаатар хотод 24 цагт, 100,000₮-с дээш үнэгүй" },
+              { icon: "🚚", t: "Хүргэлт", s: "Улаанбаатар хотод 24 цагт, 500,000₮-с дээш үнэгүй" },
               { icon: "🛡️", t: "100% жинхэнэ бараа", s: "Албан ёсны дистрибюторын баталгаатай" },
               { icon: "📞", t: "Мэргэжлийн зөвлөгөө", s: "99102250 — Даваа-Бямба 09:00-18:00" },
             ].map((r, i) => (

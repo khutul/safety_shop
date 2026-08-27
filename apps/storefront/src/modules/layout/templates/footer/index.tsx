@@ -48,9 +48,10 @@ export default async function Footer() {
   const facebook = s.facebook_url || "https://www.facebook.com/Manadasafetymongolia"
   const instagram = s.instagram_url || "https://www.instagram.com/gutal.safetymn"
 
+  const mapUrl = "https://maps.app.goo.gl/UrfoNjShUFZ9rxtm6"
   const contacts = [
     { label: phoneLabel, href: telHref, gold: true },
-    { label: address, href: "#", gold: false },
+    { label: address, href: mapUrl, gold: false, external: true },
     { label: hours, href: "#", gold: false },
     { label: email, href: "mailto:" + email, gold: false },
   ]
@@ -105,8 +106,8 @@ export default async function Footer() {
               Safetoe, Safeyear брэндийн Монгол дахь албан ёсны дистрибютор. Хөдөлмөрийн хамгаалах хэрэгслийн тэргүүлэх нийлүүлэгч.
             </p>
             <div style={{ display: "flex", flexDirection: "column", gap: 8, marginBottom: 18 }}>
-              {contacts.map((c) => (
-                <a key={c.label} href={c.href} style={{ fontSize: 11, color: c.gold ? "#FFCC00" : "rgba(255,255,255,0.4)", textDecoration: "none", fontWeight: c.gold ? 700 : 400 }}>
+              {contacts.map((c: any) => (
+                <a key={c.label} href={c.href} target={c.external ? "_blank" : undefined} rel={c.external ? "noreferrer" : undefined} style={{ fontSize: 11, color: c.gold ? "#FFCC00" : "rgba(255,255,255,0.4)", textDecoration: "none", fontWeight: c.gold ? 700 : 400 }}>
                   {c.label}
                 </a>
               ))}

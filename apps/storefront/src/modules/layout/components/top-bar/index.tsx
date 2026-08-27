@@ -20,7 +20,7 @@ export default async function TopBar() {
           <strong style={{ fontWeight: 800 }}>АНХААРУУЛГА:</strong> Ажлын хамгаалалт — Амьдралын хамгаалал
         </span>
         <span style={{ marginLeft: "auto", display: "flex", alignItems: "center", gap: 6, whiteSpace: "nowrap" }}>
-          🚚 Хүргэлт ҮНЭГҮЙ <span style={{ opacity: 0.7 }}>(100,000₮-с дээш)</span>
+          🚚 Хүргэлт ҮНЭГҮЙ <span style={{ opacity: 0.7 }}>(500,000₮-с дээш)</span>
         </span>
         <a href={`tel:${phone.replace(/\s/g, "")}`} style={{ color: "#151515", textDecoration: "none", fontWeight: 800, whiteSpace: "nowrap" }}>
           📞 Дилер: {phone}
