@@ -29,7 +29,7 @@ function IndustryCard({ ind }: { ind: Industry }) {
     <div
       onMouseEnter={() => setHov(true)}
       onMouseLeave={() => setHov(false)}
-      style={{ display: "block", position: "relative", overflow: "hidden", aspectRatio: "4/3", border: hov ? "2px solid #FFCC00" : "2px solid transparent", transition: "border-color 0.25s", background: "#101010" }}
+      style={{ display: "block", position: "relative", overflow: "hidden", aspectRatio: "1/1", border: hov ? "2px solid #FFCC00" : "2px solid transparent", transition: "border-color 0.25s", background: "#101010" }}
     >
       {imgOk && (
         // eslint-disable-next-line @next/next/no-img-element
@@ -40,11 +40,13 @@ function IndustryCard({ ind }: { ind: Industry }) {
           style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", transform: hov ? "scale(1.06)" : "scale(1)", transition: "transform 0.4s ease" }}
         />
       )}
-      <div style={{ position: "absolute", inset: 0, background: "linear-gradient(180deg,rgba(0,0,0,0.1) 0%,rgba(0,0,0,0.65) 100%)" }} />
       <div style={{ position: "absolute", bottom: 0, left: 0, right: 0, height: 3, background: "#FFCC00" }} />
-      <div style={{ position: "absolute", bottom: 12, left: 6, right: 6, textAlign: "center", zIndex: 1 }}>
-        <span style={{ color: "#fff", fontSize: 13, fontWeight: 800, letterSpacing: "0.08em", textTransform: "uppercase", fontFamily: "var(--ms-font-display)" }}>{ind.name}</span>
-      </div>
+      {/* Нэрийг зөвхөн зураггүй үед харуулна — зургууд дотроо нэртэй */}
+      {!imgOk && (
+        <div style={{ position: "absolute", inset: 0, display: "flex", alignItems: "center", justifyContent: "center", padding: 8, textAlign: "center" }}>
+          <span style={{ color: "#fff", fontSize: 13, fontWeight: 800, letterSpacing: "0.08em", textTransform: "uppercase", fontFamily: "var(--ms-font-display)" }}>{ind.name}</span>
+        </div>
+      )}
     </div>
   )
 }
