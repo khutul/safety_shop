@@ -46,7 +46,7 @@ export default async function CategoryCards() {
           {cats.map((c) => (
             <LocalizedClientLink key={c.id} href={c.slug ? `/store?category=${c.slug}` : `/store?category_id=${c.id}`} style={{ textDecoration: "none" }}>
               <div className="ms-cattile">
-                <div style={{ height: 168, background: "#f4f5f7", overflow: "hidden", position: "relative" }}>
+                <div style={{ height: 140, background: "#f4f5f7", overflow: "hidden", position: "relative" }}>
                   {c.image_url ? (
                     // eslint-disable-next-line @next/next/no-img-element
                     <img src={BASE + c.image_url} alt={c.name} style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }} />
