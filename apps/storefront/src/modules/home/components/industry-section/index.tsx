@@ -1,87 +1,66 @@
 "use client"
-import { useEffect, useState } from "react"
+import { useState } from "react"
 import LocalizedClientLink from "@modules/common/components/localized-client-link"
 
-const API = typeof window === "undefined" ? (process.env.ODOO_INTERNAL_URL || "http://localhost:8079") + "/api/v1" : "/api/v1"
-const BASE = ""
+// Static "industries we serve" section (Safetoe-style, Mongolian labels).
+// Images: put files at public/industries/<slug>.jpg — a missing image
+// gracefully falls back to the dark tile with the name only.
+type Industry = { name: string; slug: string }
 
-type Industry = { id: number; name: string; slug: string; image_url?: string | null }
-
-// Fallback images per slug (used until images uploaded in Odoo)
-const FALLBACK_BG: Record<string, string> = {
-  mining: "https://images.unsplash.com/photo-1578662996442-48f60103fc96?auto=format&fit=crop&w=500&q=75",
-  construction: "https://images.unsplash.com/photo-1504307651254-35680f356dfd?auto=format&fit=crop&w=500&q=75",
-  welding: "https://images.unsplash.com/photo-1565793298595-6a879b1d9492?auto=format&fit=crop&w=500&q=75",
-  electrical: "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?auto=format&fit=crop&w=500&q=75",
-  manufacturing: "https://images.unsplash.com/photo-1581092160607-ee22621dd758?auto=format&fit=crop&w=500&q=75",
-  transport: "https://images.unsplash.com/photo-1449824913935-59a10b8d2000?auto=format&fit=crop&w=500&q=75",
-}
-const DEFAULT_BG = "https://images.unsplash.com/photo-1581092160607-ee22621dd758?auto=format&fit=crop&w=500&q=75"
-
-const FALLBACK: Industry[] = [
-  { id: -1, name: "Уул уурхай", slug: "mining" },
-  { id: -2, name: "Барилга", slug: "construction" },
-  { id: -3, name: "Гагнуур", slug: "welding" },
-  { id: -4, name: "Цахилгаан", slug: "electrical" },
-  { id: -5, name: "Үйлдвэр", slug: "manufacturing" },
-  { id: -6, name: "Зам тээвэр", slug: "transport" },
+const INDUSTRIES: Industry[] = [
+  { name: "Уул уурхай", slug: "mining" },
+  { name: "Барилга", slug: "construction" },
+  { name: "Эрчим хүч, цахилгаан", slug: "energy" },
+  { name: "Газрын тос, хий", slug: "oil-gas" },
+  { name: "Үйлдвэрлэл", slug: "manufacturing" },
+  { name: "Гагнуур", slug: "welding" },
+  { name: "Зам тээвэр", slug: "transport" },
+  { name: "Агуулах, логистик", slug: "warehousing" },
+  { name: "Хөдөө аж ахуй", slug: "agriculture" },
+  { name: "Өвөл, хүйтэн орчин", slug: "winter" },
+  { name: "Нунтаглалт, зүлгүүр", slug: "grinding" },
+  { name: "Анхны тусламж, аврах", slug: "rescue" },
 ]
-
-function bgFor(ind: Industry) {
-  if (ind.image_url) return BASE + ind.image_url
-  return FALLBACK_BG[ind.slug] || DEFAULT_BG
-}
 
 function IndustryCard({ ind }: { ind: Industry }) {
   const [hov, setHov] = useState(false)
+  const [imgOk, setImgOk] = useState(true)
   return (
-    <LocalizedClientLink
-      href={`/store?industry=${ind.slug}`}
+    <div
       onMouseEnter={() => setHov(true)}
       onMouseLeave={() => setHov(false)}
-      style={{ textDecoration: "none", display: "block", position: "relative", overflow: "hidden", aspectRatio: "4/3", border: hov ? "2px solid #FFCC00" : "2px solid transparent", transition: "border-color 0.25s" }}
+      style={{ display: "block", position: "relative", overflow: "hidden", aspectRatio: "4/3", border: hov ? "2px solid #FFCC00" : "2px solid transparent", transition: "border-color 0.25s", background: "#101010" }}
     >
-      <div style={{ position: "absolute", inset: 0, backgroundImage: "url(" + bgFor(ind) + ")", backgroundSize: "cover", backgroundPosition: "center", transform: hov ? "scale(1.06)" : "scale(1)", transition: "transform 0.4s ease" }} />
+      {imgOk && (
+        // eslint-disable-next-line @next/next/no-img-element
+        <img
+          src={`/industries/${ind.slug}.jpg`}
+          alt={ind.name}
+          onError={() => setImgOk(false)}
+          style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", transform: hov ? "scale(1.06)" : "scale(1)", transition: "transform 0.4s ease" }}
+        />
+      )}
       <div style={{ position: "absolute", inset: 0, background: "linear-gradient(180deg,rgba(0,0,0,0.1) 0%,rgba(0,0,0,0.65) 100%)" }} />
       <div style={{ position: "absolute", bottom: 0, left: 0, right: 0, height: 3, background: "#FFCC00" }} />
-      <div style={{ position: "absolute", bottom: 12, left: 0, right: 0, textAlign: "center", zIndex: 1 }}>
-        <span style={{ color: "#fff", fontSize: 14, fontWeight: 800, letterSpacing: "0.1em", textTransform: "uppercase", fontFamily: "var(--ms-font-display)" }}>{ind.name}</span>
+      <div style={{ position: "absolute", bottom: 12, left: 6, right: 6, textAlign: "center", zIndex: 1 }}>
+        <span style={{ color: "#fff", fontSize: 13, fontWeight: 800, letterSpacing: "0.08em", textTransform: "uppercase", fontFamily: "var(--ms-font-display)" }}>{ind.name}</span>
       </div>
-    </LocalizedClientLink>
+    </div>
   )
 }
 
 export default function IndustrySection() {
-  const [items, setItems] = useState<Industry[]>(FALLBACK)
-
-  useEffect(() => {
-    let alive = true
-    ;(async () => {
-      try {
-        const res = await fetch(`${API}/industries?lang=mn`)
-        if (!res.ok) return
-        const data = await res.json()
-        if (alive && Array.isArray(data) && data.length) setItems(data)
-      } catch {
-        /* keep fallback */
-      }
-    })()
-    return () => {
-      alive = false
-    }
-  }, [])
-
   return (
     <div style={{ background: "#161616", padding: "40px 0", borderTop: "1px solid var(--ms-border-soft)" }}>
       <div className="ms-container">
         <div className="ms-sechead on-dark">
           <div className="bar" />
-          <span className="title">Салбараар хайх</span>
+          <span className="title">Ашиглагдах салбарууд</span>
           <div className="rule" />
           <LocalizedClientLink href="/store" className="more">Бүгд →</LocalizedClientLink>
         </div>
         <div className="ms-grid-industries">
-          {items.map((ind) => <IndustryCard key={ind.id} ind={ind} />)}
+          {INDUSTRIES.map((ind) => <IndustryCard key={ind.slug} ind={ind} />)}
         </div>
       </div>
     </div>
