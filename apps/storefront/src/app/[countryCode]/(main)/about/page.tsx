@@ -166,40 +166,22 @@ export default async function AboutPage() {
         </div>
       </section>
 
-      {/* ── Contact ── */}
+      {/* ── Байршил (утас/имэйл footer-т бий — энд зөвхөн хаяг + газрын зураг) ── */}
       <section id="contact" style={{ background: "#151515", padding: "52px 0" }}>
         <div className="ms-container">
           <div className="ms-sechead on-dark">
             <div className="bar" />
-            <span className="title">Холбоо барих</span>
+            <span className="title">Байршил</span>
             <div className="rule" />
           </div>
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))", gap: 24, color: "#fff" }}>
-            <div>
-              <div style={{ fontSize: 11, color: "rgba(255,255,255,0.5)", textTransform: "uppercase", letterSpacing: "0.1em", marginBottom: 8 }}>Утас</div>
-              <a href={"tel:" + phone.replace(/\s/g, "")} style={{ color: "#FFCC00", fontSize: 18, fontWeight: 700, textDecoration: "none" }}>{phone}</a>
-              <div style={{ color: "rgba(255,255,255,0.7)", fontSize: 14, marginTop: 4 }}>{phone2}</div>
-            </div>
-            <div>
-              <div style={{ fontSize: 11, color: "rgba(255,255,255,0.5)", textTransform: "uppercase", letterSpacing: "0.1em", marginBottom: 8 }}>Хаяг</div>
-              <div style={{ color: "rgba(255,255,255,0.85)", fontSize: 14, lineHeight: 1.6 }}>{address}</div>
-              <div style={{ color: "rgba(255,255,255,0.55)", fontSize: 13, marginTop: 6 }}>{hours}</div>
-              <a href="https://maps.app.goo.gl/UrfoNjShUFZ9rxtm6" target="_blank" rel="noreferrer" style={{ display: "inline-block", marginTop: 10, color: "#FFCC00", fontSize: 13, fontWeight: 700, textDecoration: "none" }}>
-                Газрын зураг харах →
-              </a>
-            </div>
-            <div>
-              <div style={{ fontSize: 11, color: "rgba(255,255,255,0.5)", textTransform: "uppercase", letterSpacing: "0.1em", marginBottom: 8 }}>Имэйл</div>
-              <a href={"mailto:" + email} style={{ color: "rgba(255,255,255,0.85)", fontSize: 14, textDecoration: "none" }}>{email}</a>
-              <div style={{ display: "flex", gap: 8, marginTop: 12 }}>
-                <a href={s.facebook_url || "https://www.facebook.com/Manadasafetymongolia"} target="_blank" rel="noreferrer" style={{ background: "#1877f2", color: "#fff", fontSize: 11, fontWeight: 700, padding: "6px 14px", borderRadius: 2, textDecoration: "none" }}>Facebook</a>
-                <a href={s.instagram_url || "https://www.instagram.com/gutal.safetymn"} target="_blank" rel="noreferrer" style={{ background: "#e4405f", color: "#fff", fontSize: 11, fontWeight: 700, padding: "6px 14px", borderRadius: 2, textDecoration: "none" }}>Instagram</a>
-              </div>
-            </div>
+          <div style={{ display: "flex", flexWrap: "wrap", alignItems: "baseline", gap: "8px 18px", marginBottom: 20 }}>
+            <span style={{ color: "rgba(255,255,255,0.85)", fontSize: 14, lineHeight: 1.6 }}>{address}</span>
+            <span style={{ color: "rgba(255,255,255,0.5)", fontSize: 13 }}>{hours}</span>
+            <a href="https://maps.app.goo.gl/UrfoNjShUFZ9rxtm6" target="_blank" rel="noreferrer" style={{ color: "#FFCC00", fontSize: 13, fontWeight: 700, textDecoration: "none" }}>
+              Google Maps дээр нээх →
+            </a>
           </div>
-
-          {/* ── Байршил (Google Map) ── */}
-          <div style={{ marginTop: 32, borderRadius: 10, overflow: "hidden", border: "1px solid #2A2A2A" }}>
+          <div style={{ borderRadius: 10, overflow: "hidden", border: "1px solid #2A2A2A" }}>
             <iframe
               title="Манада дэлгүүрийн байршил"
               src="https://www.google.com/maps?q=Manada+Safety+%D0%A3%D0%BB%D0%B0%D0%B0%D0%BD%D0%B1%D0%B0%D0%B0%D1%82%D0%B0%D1%80&output=embed"
