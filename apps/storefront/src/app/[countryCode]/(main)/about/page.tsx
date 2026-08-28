@@ -49,13 +49,6 @@ const ADVANTAGES = [
   },
 ]
 
-const INDUSTRIES = [
-  "Уул уурхай",
-  "Барилга, зам тээвэр",
-  "Үйлдвэрлэл",
-  "Эмнэлэг, үйлчилгээ",
-  "Харуул хамгаалалт",
-]
 
 export default async function AboutPage() {
   const s = await getSettings()
@@ -173,22 +166,6 @@ export default async function AboutPage() {
         </div>
       </section>
 
-      {/* ── Industries ── */}
-      <section className="ms-container" style={{ padding: "8px 20px 20px" }}>
-        <div className="ms-sechead">
-          <div className="bar" />
-          <span className="title">Хамтран ажилладаг салбарууд</span>
-          <div className="rule" />
-        </div>
-        <div style={{ display: "flex", flexWrap: "wrap", gap: 10 }}>
-          {INDUSTRIES.map((ind) => (
-            <span key={ind} style={{ background: "#fff", border: "1.5px solid #FFCC00", color: "#151515", fontSize: 13, fontWeight: 700, padding: "10px 18px", borderRadius: 30 }}>
-              {ind}
-            </span>
-          ))}
-        </div>
-      </section>
-
       {/* ── Contact ── */}
       <section id="contact" style={{ background: "#151515", padding: "52px 0" }}>
         <div className="ms-container">
@@ -207,6 +184,9 @@ export default async function AboutPage() {
               <div style={{ fontSize: 11, color: "rgba(255,255,255,0.5)", textTransform: "uppercase", letterSpacing: "0.1em", marginBottom: 8 }}>Хаяг</div>
               <div style={{ color: "rgba(255,255,255,0.85)", fontSize: 14, lineHeight: 1.6 }}>{address}</div>
               <div style={{ color: "rgba(255,255,255,0.55)", fontSize: 13, marginTop: 6 }}>{hours}</div>
+              <a href="https://maps.app.goo.gl/UrfoNjShUFZ9rxtm6" target="_blank" rel="noreferrer" style={{ display: "inline-block", marginTop: 10, color: "#FFCC00", fontSize: 13, fontWeight: 700, textDecoration: "none" }}>
+                Газрын зураг харах →
+              </a>
             </div>
             <div>
               <div style={{ fontSize: 11, color: "rgba(255,255,255,0.5)", textTransform: "uppercase", letterSpacing: "0.1em", marginBottom: 8 }}>Имэйл</div>
@@ -216,6 +196,19 @@ export default async function AboutPage() {
                 <a href={s.instagram_url || "https://www.instagram.com/gutal.safetymn"} target="_blank" rel="noreferrer" style={{ background: "#e4405f", color: "#fff", fontSize: 11, fontWeight: 700, padding: "6px 14px", borderRadius: 2, textDecoration: "none" }}>Instagram</a>
               </div>
             </div>
+          </div>
+
+          {/* ── Байршил (Google Map) ── */}
+          <div style={{ marginTop: 32, borderRadius: 10, overflow: "hidden", border: "1px solid #2A2A2A" }}>
+            <iframe
+              title="Манада дэлгүүрийн байршил"
+              src="https://www.google.com/maps?q=Manada+Safety+%D0%A3%D0%BB%D0%B0%D0%B0%D0%BD%D0%B1%D0%B0%D0%B0%D1%82%D0%B0%D1%80&output=embed"
+              width="100%"
+              height="360"
+              style={{ border: 0, display: "block", filter: "grayscale(15%)" }}
+              loading="lazy"
+              referrerPolicy="no-referrer-when-downgrade"
+            />
           </div>
         </div>
       </section>

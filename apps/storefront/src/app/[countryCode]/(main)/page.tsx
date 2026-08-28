@@ -6,7 +6,6 @@ import CategoryCards from "@modules/home/components/category-cards"
 import FeaturedBlock from "@modules/home/components/featured-block"
 import IndustrySection from "@modules/home/components/industry-section"
 import WhyBand from "@modules/home/components/why-band"
-import Testimonials from "@modules/home/components/testimonials"
 
 export const metadata: Metadata = {
   title: { absolute: "Manada Safety — Хөдөлмөр хамгааллын хэрэгсэл | PPE Монгол" },
@@ -26,7 +25,6 @@ export default async function Home(props: {
       <FeaturedBlock />
       <IndustrySection />
       <WhyBand />
-      <Testimonials />
     </div>
   )
 }
