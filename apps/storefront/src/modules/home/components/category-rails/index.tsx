@@ -17,6 +17,7 @@ type ApiProduct = {
   discount_pct?: number | null
   in_stock: boolean
   stock_status: "in" | "low" | "out"
+  made_to_order?: boolean
   main_image_url: string | null
 }
 type ApiCategory = {
@@ -97,9 +98,9 @@ function RailCard({ p }: { p: ApiProduct }) {
                 <span style={{ fontSize: 11.5, color: "rgba(255,255,255,0.4)", textDecoration: "line-through" }}>{fmt(p.old_price)}</span>
               ) : null}
             </span>
-            <span style={{ display: "inline-flex", alignItems: "center", gap: 4, color: inStock ? "#7fc75e" : "rgba(255,255,255,0.45)", fontSize: 10, fontWeight: 600 }}>
-              {inStock ? <CheckIcon /> : "⏳"}
-              {STOCK_LABEL[p.stock_status]}
+            <span style={{ display: "inline-flex", alignItems: "center", gap: 4, color: p.made_to_order ? "#FFCC00" : inStock ? "#7fc75e" : "rgba(255,255,255,0.45)", fontSize: 10, fontWeight: 600 }}>
+              {p.made_to_order ? "✍️" : inStock ? <CheckIcon /> : "⏳"}
+              {p.made_to_order ? "Захиалгаар хийгдэнэ" : STOCK_LABEL[p.stock_status]}
             </span>
           </div>
         </div>

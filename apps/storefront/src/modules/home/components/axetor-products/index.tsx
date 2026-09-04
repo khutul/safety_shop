@@ -45,6 +45,7 @@ function ProductCard({ product }: { product: HttpTypes.StoreProduct }) {
   const currency = cheapestPrice?.currency_code ?? "mnt"
   const savePct = getSavePct(original, calculated)
   const totalInventory = product.variants?.reduce((acc, v: any) => acc + (v.inventory_quantity ?? 0), 0) ?? 0
+  const madeToOrder = !!(product.metadata as any)?.made_to_order
   const inStock = totalInventory > 0
   const brand = (product.metadata?.brand as string) || ""
   const productCode = (product.metadata?.code as string) || ""
@@ -148,9 +149,11 @@ function ProductCard({ product }: { product: HttpTypes.StoreProduct }) {
               minHeight: 23,
             }}>
               <span style={{ position: "absolute", left: 8, top: "50%", transform: "translateY(-50%)", opacity: 0.85 }}>
-                {inStock ? <CheckSVG /> : "⏳"}
+                {madeToOrder ? "✍️" : inStock ? <CheckSVG /> : "⏳"}
               </span>
-              {inStock
+              {madeToOrder
+                ? "Захиалгаар хийгдэнэ"
+                : inStock
                 ? (totalInventory > 0 && totalInventory < 1000 ? `Нөөцтэй: ${totalInventory}` : "Нөөцтэй")
                 : "Үйлдвэрлэгдэж байгаа"}
             </div>

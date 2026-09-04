@@ -16,6 +16,7 @@ function StoreCard({ product }: { product: HttpTypes.StoreProduct }) {
   const img = p.thumbnail || p.images?.[0]?.url || null
   const price = p.variants?.[0]?.calculated_price?.calculated_amount ?? 0
   const qty = (p.variants || []).reduce((a: number, v: any) => a + (v.inventory_quantity ?? 0), 0)
+  const madeToOrder = !!(p as any).metadata?.made_to_order
   const inStock = qty > 0
   const brand = p.subtitle || ""
 
@@ -45,8 +46,8 @@ function StoreCard({ product }: { product: HttpTypes.StoreProduct }) {
           </div>
           <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 8, marginTop: "auto" }}>
             <span style={{ fontSize: 15, fontWeight: 800, color: "#FFCC00" }}>{price > 0 ? fmt(price) : "Үнэ асуух"}</span>
-            <span style={{ color: inStock ? "#7fc75e" : "rgba(255,255,255,0.45)", fontSize: 10, fontWeight: 600 }}>
-              {inStock ? "Нөөцтэй" : "Үйлдвэрлэгдэж байгаа"}
+            <span style={{ color: madeToOrder ? "#FFCC00" : inStock ? "#7fc75e" : "rgba(255,255,255,0.45)", fontSize: 10, fontWeight: 600 }}>
+              {madeToOrder ? "Захиалгаар хийгдэнэ" : inStock ? "Нөөцтэй" : "Үйлдвэрлэгдэж байгаа"}
             </span>
           </div>
         </div>

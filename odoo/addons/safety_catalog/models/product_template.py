@@ -74,6 +74,12 @@ class ProductTemplate(models.Model):
         default=False,
         help="If set, this product is exposed on the Next.js storefront.",
     )
+    made_to_order = fields.Boolean(
+        string="Made to Order",
+        default=False,
+        help="If set, the storefront shows a 'Захиалгаар хийгдэнэ' badge "
+             "regardless of stock (e.g. custom logo embroidery items).",
+    )
     slug = fields.Char(
         string="URL Slug",
         help="Used to build the storefront product URL in the Next.js frontend.",

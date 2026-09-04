@@ -16,6 +16,7 @@ type Product = {
   old_price?: number | null
   discount_pct?: number | null
   stock_status: "in" | "low" | "out"
+  made_to_order?: boolean
   main_image_url?: string | null
   short_description?: string
   long_description?: string
@@ -148,7 +149,9 @@ export default function ManadaProductDetail({ product, base, phone }: { product:
   const oldPrice = selected ? selected.old_price : p.old_price
   const discountPct = selected ? selected.discount_pct : p.discount_pct
   const stockStatus = selected ? (selected.qty_available > 10 ? "in" : selected.qty_available > 0 ? "low" : "out") : p.stock_status
-  const st = STOCK[stockStatus] || STOCK.out
+  const st = p.made_to_order
+    ? { label: "Захиалгаар хийгдэнэ", bg: "rgba(255,204,0,0.14)", fg: "#FFCC00" }
+    : (STOCK[stockStatus] || STOCK.out)
   const availableQty = selected?.qty_available ?? 0
 
   return (

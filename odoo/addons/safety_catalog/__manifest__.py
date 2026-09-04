@@ -12,7 +12,7 @@ brands used by the headless Next.js frontend, and links them to products.
 Future catalog extensions (product gallery, documents, features) will build
 on this module.
 """,
-    "version": "19.0.1.0.1",
+    "version": "19.0.1.1.0",
     "category": "Inventory/Inventory",
     "author": "safety_shop",
     "website": "https://manada.mn",

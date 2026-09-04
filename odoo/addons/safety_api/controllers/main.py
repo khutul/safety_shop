@@ -365,6 +365,7 @@ class SafetyCatalogAPI(http.Controller):
             "price": price, "old_price": old_price, "discount_pct": discount_pct,
             "currency": p.currency_id.name,
             "in_stock": qty > 0, "stock_status": _stock_status(qty),
+            "made_to_order": bool(p.made_to_order),
             "main_image_url": ("/api/v1/products/%s/image?v=%s" % (p.id, _img_ver(p))) if p.image_1920 else None,
             "categories": [c.slug for c in p.storefront_categ_ids if c.slug],
             "has_variants": len(p.product_variant_ids) > 1,

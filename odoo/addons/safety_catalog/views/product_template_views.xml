@@ -12,6 +12,7 @@
                         <group string="Identification">
                             <field name="brand_id"/>
                             <field name="product_model"/>
+                            <field name="made_to_order"/>
                         </group>
                         <group string="Storefront Categories">
                             <field name="storefront_categ_ids" widget="many2many_tags" nolabel="1"/>

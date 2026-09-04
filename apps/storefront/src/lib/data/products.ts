@@ -41,7 +41,7 @@ function toStoreProduct(p: any): HttpTypes.StoreProduct {
     options: [],
     categories: (p.categories || []).map((s: string) => ({ id: s, handle: s, name: s })),
     tags: [],
-    metadata: { model: p.model || "" },
+    metadata: { model: p.model || "", made_to_order: !!p.made_to_order },
     created_at: "",
     updated_at: "",
   } as unknown as HttpTypes.StoreProduct
