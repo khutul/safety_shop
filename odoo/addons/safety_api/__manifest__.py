@@ -2,7 +2,7 @@
 {
     "name": "Safety API",
     "summary": "Headless REST API (/api/v1) for the safety_shop Next.js storefront.",
-    "version": "19.0.1.2.0",
+    "version": "19.0.1.3.0",
     "category": "Website",
     "author": "safety_shop",
     "website": "https://manada.mn",

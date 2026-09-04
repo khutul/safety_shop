@@ -225,7 +225,7 @@ class SafetyCatalogAPI(http.Controller):
                 auth="public", csrf=False, cors="*")
     def product_image(self, prod_id, **kw):
         rec = request.env["product.template"].sudo().browse(prod_id)
-        return self._image_response(rec, "image_1920")
+        return self._image_response(rec, self._img_field(kw))
 
     # ---------------- Media ----------------
     @http.route("/api/v1/media/image/<int:img_id>", type="http",
@@ -331,6 +331,14 @@ class SafetyCatalogAPI(http.Controller):
         resp.headers["Cache-Control"] = "public, max-age=%d" % max_age
         return resp
 
+    def _img_field(self, kw):
+        """Pick an Odoo resized image field from the ?size= query param.
+        Odoo product images come in 128/256/512/1024/1920 px. Serving a small
+        size for grid cards drastically cuts page weight; default is full 1920."""
+        mapping = {"128": "image_128", "256": "image_256", "512": "image_512",
+                   "1024": "image_1024", "1920": "image_1920"}
+        return mapping.get((kw.get("size") or "").strip(), "image_1920")
+
     def _image_response(self, rec, field):
         if not rec.exists() or not rec[field]:
             return request.not_found()
@@ -366,13 +374,17 @@ class SafetyCatalogAPI(http.Controller):
             "currency": p.currency_id.name,
             "in_stock": qty > 0, "stock_status": _stock_status(qty),
             "made_to_order": bool(p.made_to_order),
-            "main_image_url": ("/api/v1/products/%s/image?v=%s" % (p.id, _img_ver(p))) if p.image_1920 else None,
+            # Cards use a 512px thumbnail (grid pages load 12+ images) — huge speed win.
+            "main_image_url": ("/api/v1/products/%s/image?v=%s&size=512" % (p.id, _img_ver(p))) if p.image_1920 else None,
             "categories": [c.slug for c in p.storefront_categ_ids if c.slug],
             "has_variants": len(p.product_variant_ids) > 1,
         }
 
     def _detail(self, p):
         d = self._card(p)
+        # Detail page shows one large hero image — use a crisp 1024px version.
+        if p.image_1920:
+            d["main_image_url"] = "/api/v1/products/%s/image?v=%s&size=1024" % (p.id, _img_ver(p))
         d.update({
             "short_description": p.short_description or "",
             "long_description": p.long_description or "",
