@@ -54,13 +54,15 @@ if not fp_novat:
     print("created fiscal position 'НӨАТгүй' id=%s" % fp_novat.id)
 fp_novat.write({"tax_ids": [(6, 0, [vat0.id])]})
 
-# 3b. 'НӨАТ' fiscal position -> empty mapping -> keeps the product's own 10%.
+# 3b. No separate 'НӨАТ' fiscal position: POS already shows a built-in
+#     "Үндсэн татвар" (no fiscal position) option that keeps the product's 10%.
+#     Archive any old 'НӨАТ' position to avoid a duplicate VAT option.
 fp_vat = FP.search([("name", "=", "НӨАТ")], limit=1)
-if not fp_vat:
-    fp_vat = FP.create({"name": "НӨАТ", "company_id": company.id})
-    print("created fiscal position 'НӨАТ' id=%s" % fp_vat.id)
+if fp_vat:
+    fp_vat.active = False
+    print("archived duplicate 'НӨАТ' fiscal position")
 
-# 4. Wire both into every POS config; default = НӨАТгүй.
+# 4. Wire НӨАТгүй into every POS config as the default.
 configs = env["pos.config"].sudo().search([])
 for pos in configs:
     # tax_regime_selection=True is REQUIRED: otherwise _set_fiscal_position()
@@ -68,9 +70,9 @@ for pos in configs:
     pos.write({
         "tax_regime_selection": True,
         "default_fiscal_position_id": fp_novat.id,
-        "fiscal_position_ids": [(6, 0, [fp_novat.id, fp_vat.id])],
+        "fiscal_position_ids": [(6, 0, [fp_novat.id])],
     })
-    print("POS '%s' -> regime=True, default=НӨАТгүй, options=[НӨАТгүй, НӨАТ]" % pos.name)
+    print("POS '%s' -> regime=True, default=НӨАТгүй, options=[Үндсэн татвар, НӨАТгүй]" % pos.name)
 
 env.cr.commit()
 print("DONE. %s POS config(s) updated." % len(configs))
