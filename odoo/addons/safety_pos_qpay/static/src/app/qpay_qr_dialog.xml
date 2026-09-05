@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+    <t t-name="safety_pos_qpay.QpayQrDialog">
+        <Dialog title="'QPay QR төлбөр'" size="'md'">
+            <div class="text-center p-2">
+                <div class="fs-3 fw-bold mb-2">
+                    Төлөх дүн: <t t-esc="fmt(props.amount)"/>
+                </div>
+                <img t-att-src="props.qrImage"
+                     alt="QPay QR"
+                     style="max-width: 280px; width: 100%; height: auto; margin: 0 auto; display: block;"/>
+                <p class="text-muted mt-3 mb-1">
+                    Утсаараа QPay эсвэл банкны аппаар QR-ыг уншуулж төлнө үү.
+                </p>
+                <p class="text-muted">
+                    Төлбөр төлөгдмөгц энэ цонх автоматаар хаагдана.
+                </p>
+                <p t-if="state.checking" class="text-primary">Шалгаж байна…</p>
+                <p t-if="state.paid" class="text-success fw-bold">Төлбөр амжилттай!</p>
+            </div>
+            <t t-set-slot="footer">
+                <button class="btn btn-secondary" t-on-click="onCancel">Цуцлах</button>
+            </t>
+        </Dialog>
+    </t>
+</templates>
