@@ -1,11 +1,16 @@
 import { getBaseURL } from "@lib/util/env"
 import { CartProvider } from "@lib/cart/cart-context"
 import { Metadata } from "next"
+import Script from "next/script"
 import "styles/globals.css"
 
 // Set ALLOW_INDEXING=true in .env when the site goes live on manada.mn.
 // While it's false (test server, localhost) search engines are told to stay out.
 const INDEXABLE = process.env.ALLOW_INDEXING === "true"
+
+// Google Analytics 4 — only loads on the live site (INDEXABLE) so test/localhost
+// traffic doesn't pollute the stats.
+const GA_ID = "G-8DFZS5KW0F"
 
 export const metadata: Metadata = {
   metadataBase: new URL(getBaseURL()),
@@ -74,6 +79,20 @@ export default function RootLayout(props: { children: React.ReactNode }) {
         />
       </head>
       <body>
+        {INDEXABLE && (
+          <>
+            <Script
+              src={`https://www.googletagmanager.com/gtag/js?id=${GA_ID}`}
+              strategy="afterInteractive"
+            />
+            <Script id="ga4-init" strategy="afterInteractive">
+              {`window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', '${GA_ID}');`}
+            </Script>
+          </>
+        )}
         <CartProvider>
           <main className="relative">{props.children}</main>
         </CartProvider>
