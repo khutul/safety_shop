@@ -2,8 +2,10 @@
 
 import { useState } from "react"
 import LocalizedClientLink from "@modules/common/components/localized-client-link"
-import QpayPayment from "@modules/cart/components/qpay-payment"
 import { useCart } from "@lib/cart/cart-context"
+
+// Manada-гийн Facebook хуудасны Messenger чат (footer-тэй ижил).
+const MESSENGER_URL = "https://m.me/Manadasafetymongolia"
 
 const API = typeof window === "undefined" ? (process.env.ODOO_INTERNAL_URL || "http://localhost:8079") + "/api/v1" : "/api/v1"
 
@@ -135,14 +137,33 @@ export default function ManadaCart() {
           <p style={{ color: "rgba(255,255,255,0.65)", fontSize: 14, lineHeight: 1.7, margin: "0 0 8px" }}>
             Захиалгын дугаар: <strong style={{ color: "#FFCC00" }}>{done.orderName}</strong>
           </p>
-          <p style={{ color: "rgba(255,255,255,0.55)", fontSize: 13, lineHeight: 1.7, margin: "0 0 24px" }}>
-            Манай ажилтан удахгүй тантай холбогдож захиалгыг баталгаажуулна. Захиалгын дугаараа тэмдэглэж авбал төлөвөө хэдийд ч шалгаж болно.
+          <p style={{ color: "rgba(255,255,255,0.55)", fontSize: 13, lineHeight: 1.7, margin: "0 0 20px" }}>
+            Захиалгаа баталгаажуулж, төлбөр болон хүргэлтийг зохицуулахын тулд
+            доорх товчоор манай Facebook чат руу холбогдоно уу.
+          </p>
+          <a
+            href={MESSENGER_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+            style={{
+              display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 10,
+              width: "100%", maxWidth: 340, boxSizing: "border-box", margin: "0 auto 12px",
+              padding: "13px 20px", background: "#0866FF", color: "#fff", borderRadius: 6,
+              fontWeight: 800, fontSize: 15, textDecoration: "none",
+            }}
+          >
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z" />
+            </svg>
+            Facebook Messenger-ээр холбогдох
+          </a>
+          <p style={{ color: "rgba(255,255,255,0.5)", fontSize: 12.5, lineHeight: 1.6, margin: "0 0 22px" }}>
+            Чат руу орсны дараа захиалгын дугаар <strong style={{ color: "#FFCC00" }}>{done.orderName}</strong>-ээ бичиж илгээвэл ажилтан шуурхай баталгаажуулна.
           </p>
           <div style={{ display: "flex", gap: 12, justifyContent: "center", flexWrap: "wrap" }}>
             <LocalizedClientLink href="/store" className="ms-btn-gold">Худалдан авалт үргэлжлүүлэх</LocalizedClientLink>
             <LocalizedClientLink href="/order-status" className="ms-btn-ghost">Захиалга шалгах</LocalizedClientLink>
           </div>
-          <QpayPayment orderName={done.orderName} phone={done.phone} />
         </div>
       </div>
     )
@@ -238,7 +259,7 @@ export default function ManadaCart() {
                 { d: "M12 3l7 3v6c0 4-3 7-7 9-4-2-7-5-7-9V6z M9 12l2 2 4-4", t: "100% жинхэнэ бараа — албан ёсны баталгаатай" },
                 { d: "M3 7h11v8H3z M14 10h4l3 3v2h-7z", t: "500,000₮-с дээш захиалгад УБ хотод хүргэлт үнэгүй" },
                 { d: "M12 3a9 9 0 1 0 0 18 9 9 0 0 0 0-18z M12 7v5l3 3", t: "УБ хотод 24 цагийн дотор хүргэнэ" },
-                { d: "M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z", t: "Төлбөрийг ажилтан холбогдож баталгаажуулна" },
+                { d: "M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8z", t: "Захиалгыг Facebook чатаар баталгаажуулж, төлбөр/хүргэлтийг зохицуулна" },
               ].map((r, i) => (
                 <div key={i} style={{ display: "flex", gap: 8, alignItems: "flex-start", fontSize: 11.5, color: "rgba(255,255,255,0.55)", padding: "8px 0", borderTop: i > 0 ? "1px solid var(--ms-border-soft)" : "none" }}>
                   <svg width="15" height="15" fill="none" stroke="#FFCC00" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 24 24" style={{ flexShrink: 0, marginTop: 1 }}>
