@@ -65,7 +65,8 @@ export default function ManadaCart() {
   const [form, setForm] = useState({ name: "", phone: "", email: "", address: "", note: "" })
   const [sending, setSending] = useState(false)
   const [error, setError] = useState("")
-  const [done, setDone] = useState<{ orderName: string; phone: string } | null>(null)
+  const [done, setDone] = useState<{ orderName: string; phone: string; summary: string } | null>(null)
+  const [copied, setCopied] = useState(false)
   const [shortages, setShortages] = useState<{ name: string; requested: number; available: number }[]>([])
 
   const set = (k: keyof typeof form) => (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) =>
@@ -102,6 +103,23 @@ export default function ManadaCart() {
         throw new Error(data?.error?.message || "Захиалга илгээхэд алдаа гарлаа.")
       }
       setShortages([])
+      // Facebook чат руу буулгах захиалгын мэдээлэл (clear()-ээс өмнө угсарна).
+      const summaryLines = [
+        "Сайн байна уу. Би эдгээр бараанд сонирхож, худалдан авахыг хүсэж байна:",
+        "",
+        ...items.map((i) => {
+          const opt = [i.color, i.size].filter(Boolean).join(", ")
+          return `• ${i.name}${opt ? ` (${opt})` : ""} — ${i.qty}ш × ${fmt(i.price)} = ${fmt(i.price * i.qty)}`
+        }),
+        "",
+        `Нийт дүн: ${fmt(total)}`,
+        `Захиалгын дугаар: ${data.order_name}`,
+        `Нэр: ${form.name}`,
+        `Утас: ${form.phone}`,
+      ]
+      if (form.address) summaryLines.push(`Хаяг: ${form.address}`)
+      if (form.note) summaryLines.push(`Тэмдэглэл: ${form.note}`)
+      const summary = summaryLines.join("\n")
       // Захиалгын дугаарыг хэрэглэгчийн төхөөрөмжид (browser) хадгална —
       // дараа орж ирэхэд "Миний захиалгууд" хэсэгт нэг товшилтоор шалгана.
       try {
@@ -113,7 +131,7 @@ export default function ManadaCart() {
         ].slice(0, 30)
         localStorage.setItem(KEY, JSON.stringify(next))
       } catch {}
-      setDone({ orderName: data.order_name, phone: form.phone })
+      setDone({ orderName: data.order_name, phone: form.phone, summary })
       clear()
     } catch (e: any) {
       const msg = e?.message || ""
@@ -145,6 +163,7 @@ export default function ManadaCart() {
             href={MESSENGER_URL}
             target="_blank"
             rel="noopener noreferrer"
+            onClick={() => { try { navigator.clipboard?.writeText(done.summary) } catch {} setCopied(true) }}
             style={{
               display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 10,
               width: "100%", maxWidth: 340, boxSizing: "border-box", margin: "0 auto 12px",
@@ -157,9 +176,22 @@ export default function ManadaCart() {
             </svg>
             Facebook Messenger-ээр холбогдох
           </a>
-          <p style={{ color: "rgba(255,255,255,0.5)", fontSize: 12.5, lineHeight: 1.6, margin: "0 0 22px" }}>
-            Чат руу орсны дараа захиалгын дугаар <strong style={{ color: "#FFCC00" }}>{done.orderName}</strong>-ээ бичиж илгээвэл ажилтан шуурхай баталгаажуулна.
+          <p style={{ color: copied ? "#7fc75e" : "rgba(255,255,255,0.5)", fontSize: 12.5, lineHeight: 1.6, margin: "0 0 10px" }}>
+            {copied
+              ? "✓ Захиалгын мэдээлэл хуулагдлаа. Чат руу орж Ctrl+V (утсаар: удаан дараад Paste) хийгээд илгээнэ үү."
+              : "Товч дарахад захиалгын мэдээлэл автоматаар хуулагдана. Чат руу орж буулгаад (Ctrl+V) илгээвэл ажилтан шуурхай баталгаажуулна."}
           </p>
+          <details style={{ textAlign: "left", margin: "0 auto 22px", maxWidth: 340 }}>
+            <summary style={{ cursor: "pointer", fontSize: 12, color: "rgba(255,255,255,0.45)", listStyle: "none" }}>
+              Хуулагдаагүй бол энд дараад гараар хуулна уу
+            </summary>
+            <textarea
+              readOnly
+              value={done.summary}
+              onFocus={(e) => e.currentTarget.select()}
+              style={{ ...inputStyle, minHeight: 150, marginTop: 8, fontSize: 12.5, lineHeight: 1.5, resize: "vertical" }}
+            />
+          </details>
           <div style={{ display: "flex", gap: 12, justifyContent: "center", flexWrap: "wrap" }}>
             <LocalizedClientLink href="/store" className="ms-btn-gold">Худалдан авалт үргэлжлүүлэх</LocalizedClientLink>
             <LocalizedClientLink href="/order-status" className="ms-btn-ghost">Захиалга шалгах</LocalizedClientLink>
