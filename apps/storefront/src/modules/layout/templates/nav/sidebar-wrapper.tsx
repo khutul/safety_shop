@@ -23,7 +23,7 @@ export default function SidebarWrapper() {
       }}
     >
       <svg width="18" height="18" fill="currentColor" viewBox="0 0 24 24">
-        <path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z" />
+        <path d="M3 3h8v8H3V3zm10 0h8v8h-8V3zM3 13h8v8H3v-8zm10 0h8v8h-8v-8z" />
       </svg>
       БҮТЭЭГДЭХҮҮН
     </LocalizedClientLink>

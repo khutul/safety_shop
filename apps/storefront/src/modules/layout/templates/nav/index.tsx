@@ -56,6 +56,10 @@ export default async function Nav() {
             </Suspense>
           </div>
         </div>
+        {/* Mobile-only search row (desktop search lives in the row above) */}
+        <div className="ms-show-mobile" style={{ padding: "0 12px 12px", background: "#151515" }}>
+          <SearchBox />
+        </div>
         <PrimaryMenu />
       </header>
     </div>

@@ -331,6 +331,11 @@ html, body {
 @media (max-width: 900px) {
   .ms-show-mobile { display: flex !important; }
 }
+/* Leave room at the bottom on phones so the floating call button (CallFab)
+   doesn't cover page content / buttons. */
+@media (max-width: 900px) {
+  body { padding-bottom: 74px; }
+}
 /* Nav menu row — must stay overflow-visible so dropdowns
    (brands, translate) can extend below it. */
 .ms-navrow {
